@@ -1,5 +1,9 @@
 const User = require('../models/userModel')
 const asyncHandler = require('express-async-handler')
+const {
+	generateAccessToken,
+	generateRefreshToken,
+} = require('../middlewares/jwt')
 
 const register = asyncHandler(async (req, res) => {
 	const { firstName, lastName, email, password, mobile } = req.body
@@ -24,6 +28,8 @@ const register = asyncHandler(async (req, res) => {
 	}
 })
 
+// Refresh token -> Cấp mới access token
+// Access token -> xác thực người dùng, phân quyền người dùng
 const login = asyncHandler(async (req, res) => {
 	const { email, password } = req.body
 
@@ -33,12 +39,37 @@ const login = asyncHandler(async (req, res) => {
 			mes: 'Missing inputs',
 		})
 
+	// plain object
 	const response = await User.findOne({ email })
 
 	if (response && response.isCorrectPassword(password)) {
+		// Tách password và role ra khỏi response
 		const { password, role, ...userData } = response.toObject()
+
+		// Tạo access token
+		const accessToken = generateAccessToken(response._id, role)
+
+		// Tạo refresh token
+		const refreshToken = generateRefreshToken(response._id)
+
+		// Lưu refresh token vào database
+		await User.findByIdAndUpdate(
+			response._id,
+			{
+				refreshToken,
+			},
+			{ new: true },
+		)
+
+		// Lưu refresh token vào cookie
+		res.cookie('refreshToken', refreshToken, {
+			httpOnly: true,
+			maxAge: 7 * 24 * 60 * 60 * 1000,
+		})
+
 		return res.status(200).json({
 			success: true,
+			accessToken,
 			data: userData,
 		})
 	} else {
@@ -46,7 +77,19 @@ const login = asyncHandler(async (req, res) => {
 	}
 })
 
+const getCurrent = asyncHandler(async (req, res) => {
+	const { _id } = req.user
+
+	const user = await User.findById(_id).select('-refreshToken -role -password')
+
+	return res.status(200).json({
+		success: user ? true : false,
+		rs: user ? user : 'User not found',
+	})
+})
+
 module.exports = {
 	register,
 	login,
+	getCurrent,
 }
