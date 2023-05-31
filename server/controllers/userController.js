@@ -7,7 +7,6 @@ const {
 } = require('../middlewares/jwt')
 const jwt = require('jsonwebtoken')
 const sendMail = require('../utils/sendMail')
-const { use } = require('../routes/userRouter')
 
 const register = asyncHandler(async (req, res) => {
 	const { firstName, lastName, email, password, mobile } = req.body
@@ -48,25 +47,25 @@ const login = asyncHandler(async (req, res) => {
 
 	if (response && (await response.isCorrectPassword(password))) {
 		// Tách password và role ra khỏi response
-		const { password, role, ...userData } = response.toObject()
+		const { password, role, refreshToken, ...userData } = response.toObject()
 
 		// Tạo access token
 		const accessToken = generateAccessToken(response._id, role)
 
 		// Tạo refresh token
-		const refreshToken = generateRefreshToken(response._id)
+		const newRefreshToken = generateRefreshToken(response._id)
 
 		// Lưu refresh token vào database
 		await User.findByIdAndUpdate(
 			response._id,
 			{
-				refreshToken,
+				refreshToken: newRefreshToken,
 			},
 			{ new: true },
 		)
 
 		// Lưu refresh token vào cookie
-		res.cookie('refreshToken', refreshToken, {
+		res.cookie('refreshToken', newRefreshToken, {
 			httpOnly: true,
 			maxAge: 7 * 24 * 60 * 60 * 1000,
 		})
@@ -178,6 +177,8 @@ const forgotPassword = asyncHandler(async (req, res) => {
 const resetPassword = asyncHandler(async (req, res) => {
 	const { password, token } = req.body
 
+	if (!password && !token) throw new Error('Missing inputs')
+
 	const passwordResetToken = crypto
 		.createHash('sha256')
 		.update(token)
@@ -203,6 +204,61 @@ const resetPassword = asyncHandler(async (req, res) => {
 	})
 })
 
+const getUsers = asyncHandler(async (req, res) => {
+	const response = await User.find().select('-refreshToken -password')
+
+	return res.status(200).json({
+		success: response ? true : false,
+		users: response,
+	})
+})
+
+const deleteUser = asyncHandler(async (req, res) => {
+	const { _id } = req.query
+
+	if (!_id) throw new Error('Missing inputs')
+
+	const response = await User.findByIdAndDelete(_id)
+
+	return res.status(200).json({
+		success: response ? true : false,
+		deleteUser: response
+			? `User with email ${response.email} deleted`
+			: 'No user delete',
+	})
+})
+
+const updateUser = asyncHandler(async (req, res) => {
+	const { _id } = req.user
+
+	if (!_id || Object.keys(req.body).length === 0)
+		throw new Error('Missing inputs')
+
+	const response = await User.findByIdAndUpdate(_id, req.body, {
+		new: true,
+	}).select('-refreshToken -role -password')
+
+	return res.status(200).json({
+		success: response ? true : false,
+		updateUser: response ? response : 'Some thing went wrong',
+	})
+})
+
+const updateUserByAdmin = asyncHandler(async (req, res) => {
+	const { uid } = req.params
+
+	if (Object.keys(req.body).length === 0) throw new Error('Missing inputs')
+
+	const response = await User.findByIdAndUpdate(uid, req.body, {
+		new: true,
+	}).select('-refreshToken -role -password')
+
+	return res.status(200).json({
+		success: response ? true : false,
+		updateUser: response ? response : 'Some thing went wrong',
+	})
+})
+
 module.exports = {
 	register,
 	login,
@@ -211,4 +267,8 @@ module.exports = {
 	logout,
 	forgotPassword,
 	resetPassword,
+	getUsers,
+	deleteUser,
+	updateUser,
+	updateUserByAdmin,
 }
