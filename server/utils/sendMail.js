@@ -4,7 +4,7 @@ const asyncHandler = require('express-async-handler')
 const sendMail = asyncHandler(async ({ email, html }) => {
 	// create reusable transporter object using the default SMTP transport
 	let transporter = nodemailer.createTransport({
-		host: 'smtp.gmaail.com',
+		host: 'smtp.gmail.com',
 		port: 587,
 		secure: false, // true for 465, false for other ports
 		auth: {
@@ -23,4 +23,5 @@ const sendMail = asyncHandler(async ({ email, html }) => {
 
 	return info
 })
+
 module.exports = sendMail

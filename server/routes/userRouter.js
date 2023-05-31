@@ -6,6 +6,7 @@ const {
 	refreshAccessToken,
 	logout,
 	forgotPassword,
+	resetPassword,
 } = require('../controllers/useController')
 const { verifyAccessToken } = require('../middlewares/verifyToken')
 
@@ -15,5 +16,6 @@ router.get('/current', verifyAccessToken, getCurrent)
 router.post('/refreshtoken', refreshAccessToken)
 router.get('/logout', verifyAccessToken, logout)
 router.get('/forgotpassword', forgotPassword)
+router.put('/resetpassword', resetPassword)
 
 module.exports = router

@@ -1,11 +1,13 @@
 const User = require('../models/userModel')
 const asyncHandler = require('express-async-handler')
+const crypto = require('crypto')
 const {
 	generateAccessToken,
 	generateRefreshToken,
 } = require('../middlewares/jwt')
 const jwt = require('jsonwebtoken')
 const sendMail = require('../utils/sendMail')
+const { use } = require('../routes/userRouter')
 
 const register = asyncHandler(async (req, res) => {
 	const { firstName, lastName, email, password, mobile } = req.body
@@ -44,7 +46,7 @@ const login = asyncHandler(async (req, res) => {
 	// plain object
 	const response = await User.findOne({ email })
 
-	if (response && response.isCorrectPassword(password)) {
+	if (response && (await response.isCorrectPassword(password))) {
 		// Tách password và role ra khỏi response
 		const { password, role, ...userData } = response.toObject()
 
@@ -156,7 +158,9 @@ const forgotPassword = asyncHandler(async (req, res) => {
 
 	await user.save()
 
-	const html = `Xin vui lòng click vào link dưới đây để thay đổi mật khẩu của bạn. Link này sễ hết hạn sau 15 phút kể từ bây giờ <a herf=${process.env.URL_CLIENT}/api/user/reset-password/${resetToken}>Click here</a>`
+	const html = `Xin vui lòng click vào link dưới đây để thay đổi mật khẩu của bạn. 
+	Link này sễ hết hạn sau 15 phút kể từ bây giờ. 
+	<a href=${process.env.URL_CLIENT}/api/user/reset-password/${resetToken}>Click here</a>`
 
 	const data = {
 		email,
@@ -171,6 +175,34 @@ const forgotPassword = asyncHandler(async (req, res) => {
 	})
 })
 
+const resetPassword = asyncHandler(async (req, res) => {
+	const { password, token } = req.body
+
+	const passwordResetToken = crypto
+		.createHash('sha256')
+		.update(token)
+		.digest('hex')
+
+	const user = await User.findOne({
+		passwordResetToken,
+		passwordResetExpires: { $gt: Date.now() },
+	})
+
+	if (!user) throw new Error('Invalid reset token')
+
+	user.password = password
+	user.passwordResetToken = undefined
+	user.passwordChangedAt = Date.now()
+	user.passwordResetExpires = undefined
+
+	await user.save()
+
+	return res.status(200).json({
+		success: user ? true : false,
+		mes: user ? 'Updated password' : 'Something went wrong',
+	})
+})
+
 module.exports = {
 	register,
 	login,
@@ -178,4 +210,5 @@ module.exports = {
 	refreshAccessToken,
 	logout,
 	forgotPassword,
+	resetPassword,
 }
