@@ -28,12 +28,57 @@ const getProduct = asyncHandler(async (req, res) => {
 
 // Filtering, sorting & pagination
 const getProducts = asyncHandler(async (req, res) => {
-	const products = await Product.find()
+	const queries = { ...req.query }
 
-	return res.status(200).json({
-		success: products ? true : false,
-		productDatas: products ? products : "Can't get product",
-	})
+	// tách các trường đặt biệt ra khỏi query
+	const excludeFields = ['limit', 'sort', 'page', 'fields']
+
+	// xóa những trường excludeFields ra khỏi query
+	excludeFields.forEach(el => delete queries[el])
+
+	// format lại các operators cho đúng cú pháp mongoose
+	let queryString = JSON.stringify(queries)
+	// thay thế các từ đơn như "gte", "gt", "lt", "lte" => dạng "$gte", "$gt", "$lt", "$lte"
+	queryString = queryString.replace(
+		// biểu thức chính quy sử dụng để tìm các từ đơn ("gte", "gt", "lt", "lte") nằm độc lập giữa các ranh giới từ
+		/\b(gte|gt|lt|lte)\b/g,
+		macthedEl => `$${macthedEl}`,
+	)
+	const formatedQueries = JSON.parse(queryString)
+
+	// filtering
+	if (queries?.title)
+		formatedQueries.title = {
+			$regex: queries.title,
+			$options: 'i', // tìm kiếm không phân biệt chữ hoa chữ thường trong quá trình tìm kiếm theo mẫu
+		}
+
+	let queryCommand = Product.find(formatedQueries)
+
+	// sorting
+	if (req.query.sort) {
+		const sortBy = req.query.sort.split(',').join()
+		queryCommand = queryCommand.sort(sortBy)
+	}
+
+	// fields limiting
+
+	// pagination
+
+	// execute query
+	// số lượng sp thỏa mãn điều kiện !== số lượng sản phẩm trả về 1 lần gọi API
+	try {
+		const response = await queryCommand.exec()
+		const counts = await Product.find(formatedQueries).countDocuments()
+
+		return res.status(200).json({
+			success: response ? true : false,
+			products: response ? response : "Can't get product",
+			counts,
+		})
+	} catch (err) {
+		throw new Error(err.message)
+	}
 })
 
 const updateProduct = asyncHandler(async (req, res) => {
