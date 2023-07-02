@@ -62,8 +62,21 @@ const getProducts = asyncHandler(async (req, res) => {
 	}
 
 	// fields limiting
+	if (req.query.fields) {
+		const fields = req.query.fields.split(',').join(' ')
+		queryCommand = queryCommand.select(fields)
+	}
 
 	// pagination
+	// limit: số object lấy về 1 lần gọi API
+	// skip: 2
+	// 1 2 3 ... 10
+	// +2 => 2
+	// +dasdads => NaN
+	const page = +req.query.page || 1
+	const limit = +req.query.limit || process.env.LIMIT_PRODUCTS
+	const skip = (page - 1) * limit
+	queryCommand.skip(skip).limit(limit)
 
 	// execute query
 	// số lượng sp thỏa mãn điều kiện !== số lượng sản phẩm trả về 1 lần gọi API
@@ -73,8 +86,8 @@ const getProducts = asyncHandler(async (req, res) => {
 
 		return res.status(200).json({
 			success: response ? true : false,
-			products: response ? response : "Can't get product",
 			counts,
+			products: response ? response : "Can't get product",
 		})
 	} catch (err) {
 		throw new Error(err.message)
@@ -107,10 +120,51 @@ const deleteProduct = asyncHandler(async (req, res) => {
 	})
 })
 
+const ratings = asyncHandler(async (req, res) => {
+	const { _id } = req.user
+	const { star, comment, pid } = req.body
+
+	if (!star || !pid) throw new Error('Missing inputs')
+
+	const ratingProduct = await Product.findById(pid)
+	const alreadyRating = ratingProduct?.rating?.find(
+		el => el.postedBy.toString() === _id,
+	)
+
+	if (alreadyRating) {
+		// update star & comment
+		await Product.updateOne(
+			{
+				rating: { $elemMatch: alreadyRating },
+			},
+			{
+				$set: { 'rating.$.star': star, 'rating.$.comment': comment },
+			},
+			{ new: true },
+		)
+	} else {
+		// add star & comment
+		await Product.findByIdAndUpdate(
+			pid,
+			{
+				$push: { rating: { star, comment, postedBy: _id } },
+			},
+			{ new: true },
+		)
+	}
+
+	// sum ratings
+
+	return res.status(200).json({
+		status: true,
+	})
+})
+
 module.exports = {
 	createProduct,
 	getProduct,
 	getProducts,
 	updateProduct,
 	deleteProduct,
+	ratings,
 }
