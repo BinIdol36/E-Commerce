@@ -154,9 +154,16 @@ const ratings = asyncHandler(async (req, res) => {
 	}
 
 	// sum ratings
+	const updatedProduct = await Product.findById(pid)
+	const ratingCount = updatedProduct.rating.length
+	const sumRatings = updatedProduct.rating.reduce((sum, el) => sum + el.star, 0)
+	updatedProduct.totalRating = Math.round((sumRatings * 10) / ratingCount) / 10
+
+	await updatedProduct.save()
 
 	return res.status(200).json({
 		status: true,
+		updatedProduct,
 	})
 })
 
