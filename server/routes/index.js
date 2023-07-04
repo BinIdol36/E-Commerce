@@ -3,6 +3,7 @@ const productRouter = require('./productRouter')
 const productCategoryRouter = require('./productCategoryRouter')
 const blogCategoryRouter = require('./blogCategoryRouter')
 const blogRouter = require('./blogRouter')
+const brandRouter = require('./brandRouter')
 const { notFound, errHandler } = require('../middlewares/errHandler')
 
 const initRoutes = app => {
@@ -11,6 +12,7 @@ const initRoutes = app => {
 	app.use('/api/prodcategory', productCategoryRouter)
 	app.use('/api/blogcategory', blogCategoryRouter)
 	app.use('/api/blog', blogRouter)
+	app.use('/api/brand', brandRouter)
 
 	app.use(notFound)
 	app.use(errHandler)
