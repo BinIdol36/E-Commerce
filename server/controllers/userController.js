@@ -298,7 +298,7 @@ const updateCart = asyncHandler(async (req, res) => {
 
 			return res.status(200).json({
 				success: response ? true : false,
-				updateUser: response ? response : 'Some thing went wrong',
+				updatedUser: response ? response : 'Some thing went wrong',
 			})
 		} else {
 			const response = await User.findByIdAndUpdate(
@@ -311,7 +311,7 @@ const updateCart = asyncHandler(async (req, res) => {
 
 			return res.status(200).json({
 				success: response ? true : false,
-				updateUser: response ? response : 'Some thing went wrong',
+				updatedUser: response ? response : 'Some thing went wrong',
 			})
 		}
 	} else {
@@ -325,7 +325,7 @@ const updateCart = asyncHandler(async (req, res) => {
 
 		return res.status(200).json({
 			success: response ? true : false,
-			updateUser: response ? response : 'Some thing went wrong',
+			updatedUser: response ? response : 'Some thing went wrong',
 		})
 	}
 })
