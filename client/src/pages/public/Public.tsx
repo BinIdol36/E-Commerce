@@ -5,10 +5,10 @@ import { Header, Navigation } from "../../components"
 
 function Public() {
   return (
-    <div className="w-full flex items-center">
+    <div className="w-full flex flex-col items-center">
       <Header />
       <Navigation />
-      <div className="w-full">
+      <div className="w-main">
         <Outlet />
       </div>
     </div>

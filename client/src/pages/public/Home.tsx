@@ -3,7 +3,7 @@ import { Banner, Sidebar } from "../../components"
 
 function Home() {
   return (
-    <div className="w-main flex ">
+    <div className="w-main flex">
       <div className="flex flex-col gap-5 w-[30%] flex-auto border">
         <Sidebar />
         <span>Deal daily</span>
