@@ -7,11 +7,7 @@ export const appSlice = createSlice({
     categories: null,
     isLoading: false,
   },
-  reducers: {
-    // logout: (state) => {
-    //   state.isLoading = false
-    // },
-  },
+  reducers: {},
   // Code logic xử lý async action
   extraReducers: (builder) => {
     // Bắt đầu thực hiện action login (Promise pending)
@@ -36,6 +32,6 @@ export const appSlice = createSlice({
   },
 })
 
-export const {} = appSlice.actions
+// export const {} = appSlice.actions
 
 export default appSlice.reducer // reducer là export cả reducers vs extraReducers
