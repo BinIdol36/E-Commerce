@@ -1,8 +1,7 @@
 import React, { useState } from "react"
-import { formatMoney } from "../utils/helper"
+import { formatMoney, renderStarFromNumber } from "../utils/helper"
 import trending from "../assets/trending.png"
 import label from "../assets/new.png"
-import { renderStarFromNumber } from "../utils/helper"
 import { SelectOption } from "./"
 import icons from "../utils/icons"
 
