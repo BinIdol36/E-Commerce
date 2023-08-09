@@ -8,7 +8,7 @@ const FeatureProducts = () => {
   const fetchProducts = async () => {
     const response = await apiGetProducts({
       limit: 9,
-      //   totalRating: 5,
+      totalRating: 5,
     })
 
     if (response.success) setProducts(response.products)
@@ -26,7 +26,7 @@ const FeatureProducts = () => {
       <div className="flex flex-wrap mt-[15px] mx-[-10px]">
         {products?.map((el) => (
           <ProductCard
-            key={el.id}
+            key={el._id}
             image={el.thumb}
             title={el.title}
             totalRating={el.totalRating}
