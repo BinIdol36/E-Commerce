@@ -12,14 +12,6 @@ import icons from "../../utils/icons"
 
 const { IoIosArrowForward } = icons
 
-const settings = {
-  dots: false, // index
-  infinite: true, // lướt tới thằng cuối tự lướt lại
-  speed: 500, // tốc độ lướt
-  slidesToShow: 3, // số lượng item show mỗi lần lướt
-  slidesToScroll: 1, // khi click thì sẽ lướt theo số lượng
-}
-
 function Home() {
   const { newProducts } = useSelector((state) => state.products)
   const { categories } = useSelector((state) => state.app)
@@ -31,7 +23,7 @@ function Home() {
       <div className="w-main flex">
         <div className="flex flex-col gap-5 w-[25%] flex-auto">
           <Sidebar />
-          {/* <DealDaily /> */}
+          <DealDaily />
         </div>
         <div className="flex flex-col gap-5 pl-5 w-[75%] flex-auto">
           <Banner />
@@ -85,7 +77,6 @@ function Home() {
           BLOG POSTS
         </h3>
       </div>
-      <div className="w-full h-[500px] bg-main">Footer</div>
     </div>
   )
 }
