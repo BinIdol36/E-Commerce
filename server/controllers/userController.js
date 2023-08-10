@@ -9,9 +9,9 @@ const jwt = require('jsonwebtoken')
 const sendMail = require('../utils/sendMail')
 
 const register = asyncHandler(async (req, res) => {
-	const { firstName, lastName, email, password, mobile } = req.body
+	const { firstName, lastName, email, password, phone } = req.body
 
-	if (!firstName || !lastName || !email || !password || !mobile)
+	if (!firstName || !lastName || !email || !password || !phone)
 		return res.status(400).json({
 			success: false,
 			mes: 'Missing inputs',
@@ -73,7 +73,7 @@ const login = asyncHandler(async (req, res) => {
 		return res.status(200).json({
 			success: true,
 			accessToken,
-			data: userData,
+			userData,
 		})
 	} else {
 		throw new Error('Invalid credentials!')
