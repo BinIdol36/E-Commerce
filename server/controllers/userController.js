@@ -78,8 +78,10 @@ const finalregister = asyncHandler(async (req, res) => {
 	const cookie = req.cookies
 	const { token } = req.params
 
-	if (!cookie || cookie?.dataregister?.token !== token)
+	if (!cookie || cookie?.dataregister?.token !== token) {
+		res.clearCookie('dataregister')
 		return res.redirect(`${process.env.URL_CLIENT}/finalregister/failed`)
+	}
 
 	const newUser = await User.create({
 		email: cookie?.dataregister?.email,
@@ -88,6 +90,8 @@ const finalregister = asyncHandler(async (req, res) => {
 		firstName: cookie?.dataregister?.firstName,
 		lastName: cookie?.dataregister?.lastName,
 	})
+
+	res.clearCookie('dataregister')
 
 	if (newUser)
 		return res.redirect(`${process.env.URL_CLIENT}/finalregister/success`)
@@ -208,7 +212,7 @@ const logout = asyncHandler(async (req, res) => {
 // Check token có giống với token mà server gửi mail hay không
 // change password
 const forgotPassword = asyncHandler(async (req, res) => {
-	const { email } = req.query
+	const { email } = req.body
 
 	if (!email) throw new Error('Missing email')
 
@@ -222,7 +226,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
 
 	const html = `Xin vui lòng click vào link dưới đây để thay đổi mật khẩu của bạn. 
 	Link này sễ hết hạn sau 15 phút kể từ bây giờ. 
-	<a href=${process.env.URL_CLIENT}/api/user/reset-password/${resetToken}>Click here</a>`
+	<a href=${process.env.URL_CLIENT}/reset-password/${resetToken}>Click here</a>`
 
 	const data = {
 		email,

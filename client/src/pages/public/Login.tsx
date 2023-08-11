@@ -1,8 +1,8 @@
 import React, { useState, useCallback } from "react"
 import { InputField, Button } from "../../components"
-import { apiRegister, apiLogin } from "../../apis"
+import { apiRegister, apiLogin, apiForgotPassword } from "../../apis"
 import Swal from "sweetalert2"
-import { useNavigate, useLocation } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import path from "../../utils/path"
 import { register } from "../../store/user/userSlice"
 import { useDispatch } from "react-redux"
@@ -10,9 +10,6 @@ import { useDispatch } from "react-redux"
 function Login() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const location = useLocation()
-
-  console.log(location)
 
   const [payload, setPayload] = useState({
     email: "",
@@ -22,6 +19,7 @@ function Login() {
     phone: "",
   })
 
+  const [isForgotPassword, setIsForgotPassword] = useState(false)
   const [isRegister, setisRegister] = useState(false)
   const resetPayload = () => {
     setPayload({
@@ -31,6 +29,12 @@ function Login() {
       lastName: "",
       phone: "",
     })
+  }
+  const [email, setEmail] = useState("")
+
+  const handleForgotPassword = async () => {
+    const response = await apiForgotPassword({ email })
+    console.log(response)
   }
 
   const handleSubmit = useCallback(async () => {
@@ -60,6 +64,22 @@ function Login() {
 
   return (
     <div className="w-screen h-screen relative">
+      <div className="absolute top-0 left-0 right-0 bottom-0 bg-white flex flex-col items-center py-8 z-50">
+        <div className="flex flex-col gap-4">
+          <label htmlFor="email">Enter your email:</label>
+          <input
+            type="text"
+            id="email"
+            className="w-[800px] pb-2 border-b outline-none placeholder:text-sm"
+            placeholder="Ex: email@gmail.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <div className="flex items-center justify-end w-full">
+            <Button name="Submit" handleOnClick={handleForgotPassword} />
+          </div>
+        </div>
+      </div>
       <img
         src="https://img.freepik.com/premium-photo/shopping-cart-card-icon-discounts_116441-26066.jpg"
         alt=""

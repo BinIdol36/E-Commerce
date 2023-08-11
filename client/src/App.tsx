@@ -10,6 +10,7 @@ import {
   Blogs,
   Products,
   FinalRegister,
+  ResetPassword,
 } from "./pages/public"
 import path from "./utils/path"
 import { getCategories } from "./store/app/asyncActions"
@@ -33,6 +34,7 @@ function App() {
           />
           <Route path={path.BLOGS} element={<Blogs />} />
           <Route path={path.PRODUCTS} element={<Products />} />
+          <Route path={path.RESET_PASSWORD} element={<ResetPassword />} />
         </Route>
         <Route path={path.FINAL_REGISTER} element={<FinalRegister />} />
         <Route path={path.LOGIN} element={<Login />} />
