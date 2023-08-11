@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react"
 import { InputField, Button } from "../../components"
 import { apiRegister, apiLogin } from "../../apis"
 import Swal from "sweetalert2"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 import path from "../../utils/path"
 import { register } from "../../store/user/userSlice"
 import { useDispatch } from "react-redux"
@@ -10,6 +10,9 @@ import { useDispatch } from "react-redux"
 function Login() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const location = useLocation()
+
+  console.log(location)
 
   const [payload, setPayload] = useState({
     email: "",

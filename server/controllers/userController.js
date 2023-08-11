@@ -1,12 +1,36 @@
 const User = require('../models/userModel')
 const asyncHandler = require('express-async-handler')
 const crypto = require('crypto')
+const makeToken = require('uniqid')
 const {
 	generateAccessToken,
 	generateRefreshToken,
 } = require('../middlewares/jwt')
 const jwt = require('jsonwebtoken')
 const sendMail = require('../utils/sendMail')
+
+// const register = asyncHandler(async (req, res) => {
+// 	const { firstName, lastName, email, password, phone } = req.body
+
+// 	if (!firstName || !lastName || !email || !password || !phone)
+// 		return res.status(400).json({
+// 			success: false,
+// 			mes: 'Missing inputs',
+// 		})
+
+// 	const user = await User.findOne({ email })
+
+// 	if (user) throw new Error('User has existed!')
+// 	else {
+// 		const newUser = await User.create(req.body)
+// 		return res.status(200).json({
+// 			success: newUser ? true : false,
+// 			mes: newUser
+// 				? 'register is successfully, please go login'
+// 				: 'something went wrong',
+// 		})
+// 	}
+// })
 
 const register = asyncHandler(async (req, res) => {
 	const { firstName, lastName, email, password, phone } = req.body
@@ -21,14 +45,53 @@ const register = asyncHandler(async (req, res) => {
 
 	if (user) throw new Error('User has existed!')
 	else {
-		const newUser = await User.create(req.body)
-		return res.status(200).json({
-			success: newUser ? true : false,
-			mes: newUser
-				? 'register is successfully, please go login'
-				: 'something went wrong',
+		const token = makeToken()
+		res.cookie(
+			'dataregister',
+			{ ...req.body, token },
+			{
+				httpOnly: true,
+				maxAge: 15 * 60 * 1000,
+			},
+		)
+
+		const html = `Xin vui lòng click vào link dưới đây để hoàn tất quá trình đăng ký. 
+		Link này sễ hết hạn sau 15 phút kể từ bây giờ. 
+		<a href=${process.env.URL_SERVER}/api/user/finalregister/${token}>Click here</a>`
+
+		const data = {
+			email,
+			html,
+			subject: 'Hoàn tất đăng ký Digital World',
+		}
+
+		await sendMail(data)
+
+		return res.json({
+			success: true,
+			mes: 'Please check your email to active account',
 		})
 	}
+})
+
+const finalregister = asyncHandler(async (req, res) => {
+	const cookie = req.cookies
+	const { token } = req.params
+
+	if (!cookie || cookie?.dataregister?.token !== token)
+		return res.redirect(`${process.env.URL_CLIENT}/finalregister/failed`)
+
+	const newUser = await User.create({
+		email: cookie?.dataregister?.email,
+		password: cookie?.dataregister?.password,
+		phone: cookie?.dataregister?.phone,
+		firstName: cookie?.dataregister?.firstName,
+		lastName: cookie?.dataregister?.lastName,
+	})
+
+	if (newUser)
+		return res.redirect(`${process.env.URL_CLIENT}/finalregister/success`)
+	else return res.redirect(`${process.env.URL_CLIENT}/finalregister/failed`)
 })
 
 // Refresh token -> Cấp mới access token
@@ -164,6 +227,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
 	const data = {
 		email,
 		html,
+		subject: 'Forgot password',
 	}
 
 	const rs = await sendMail(data)
@@ -344,4 +408,5 @@ module.exports = {
 	updateUserByAdmin,
 	updateUserAddress,
 	updateCart,
+	finalregister,
 }
