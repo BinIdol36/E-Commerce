@@ -1,6 +1,11 @@
 import React, { useState, useCallback, useEffect } from "react"
 import { InputField, Button } from "../../components"
-import { apiRegister, apiLogin, apiForgotPassword } from "../../apis"
+import {
+  apiRegister,
+  apiLogin,
+  apiForgotPassword,
+  apiFinalRegister,
+} from "../../apis"
 import Swal from "sweetalert2"
 import { useNavigate } from "react-router-dom"
 import path from "../../utils/path"
@@ -21,6 +26,7 @@ function Login() {
     phone: "",
   })
 
+  const [isVerifiedEmail, setIsVerifiedEmail] = useState(false)
   const [isForgotPassword, setIsForgotPassword] = useState(false)
   const [isRegister, setisRegister] = useState(false)
   const resetPayload = () => {
@@ -32,6 +38,7 @@ function Login() {
       phone: "",
     })
   }
+  const [token, setToken] = useState("")
   const [invalidFields, setInvalidFields] = useState([])
   const [email, setEmail] = useState("")
 
@@ -57,10 +64,11 @@ function Login() {
       if (isRegister) {
         const response = await apiRegister(payload)
         if (response.success) {
-          Swal.fire("Congratulation", response.mes, "success").then(() => {
-            setisRegister(false)
-            resetPayload()
-          })
+          setIsVerifiedEmail(true)
+          // Swal.fire("Congratulation", response.mes, "success").then(() => {
+          //   setisRegister(false)
+          //   resetPayload()
+          // })
         } else Swal.fire("Oops!", response.mes, "error")
       } else {
         const response = await apiLogin(data)
@@ -78,8 +86,48 @@ function Login() {
     }
   }, [payload, isRegister])
 
+  const finalRegister = async () => {
+    const response = await apiFinalRegister(token)
+    if (response.success)
+      Swal.fire("Congratulation", response.mes, "success").then(() => {
+        setisRegister(false)
+        resetPayload()
+      })
+    else Swal.fire("Oops!", response.mes, "error")
+
+    setIsVerifiedEmail(false)
+    setToken("")
+  }
+
   return (
     <div className="w-screen h-screen relative">
+      {isVerifiedEmail && (
+        <div
+          className="absolute top-0 left-0 right-0 bottom-0 
+      bg-overlay z-50 flex flex-col items-center justify-center"
+        >
+          <div className="bg-white w-[500px] rounded-md p-8">
+            <h4 className="">
+              We sent a code to your mail. Please check your mail and enter your
+              code
+            </h4>
+            <input
+              type="text"
+              value={token}
+              onChange={(e) => setToken(e.target.value)}
+              className="p-2 border rounded-md outline-none"
+            />
+            <button
+              type="button"
+              className="px-4 py-2 bg-blue-500 font-semibold text-white rounded-md ml-4"
+              onClick={finalRegister}
+            >
+              Submit
+            </button>
+          </div>
+        </div>
+      )}
+
       {isForgotPassword && (
         <div
           className="absolute top-0 left-0 right-0 bottom-0 
