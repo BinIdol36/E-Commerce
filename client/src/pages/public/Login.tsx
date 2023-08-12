@@ -1,12 +1,13 @@
-import React, { useState, useCallback } from "react"
+import React, { useState, useCallback, useEffect } from "react"
 import { InputField, Button } from "../../components"
 import { apiRegister, apiLogin, apiForgotPassword } from "../../apis"
 import Swal from "sweetalert2"
 import { useNavigate } from "react-router-dom"
 import path from "../../utils/path"
-import { register } from "../../store/user/userSlice"
+import { login } from "../../store/user/userSlice"
 import { useDispatch } from "react-redux"
 import { toast } from "react-toastify"
+import { validate } from "../../utils/helper"
 
 function Login() {
   const navigate = useNavigate()
@@ -31,7 +32,12 @@ function Login() {
       phone: "",
     })
   }
+  const [invalidFields, setInvalidFields] = useState([])
   const [email, setEmail] = useState("")
+
+  useEffect(() => {
+    resetPayload()
+  }, [isRegister])
 
   const handleForgotPassword = async () => {
     const response = await apiForgotPassword({ email })
@@ -39,28 +45,36 @@ function Login() {
     else toast.info(response.mes, { theme: "colored" })
   }
 
+  // Submit
   const handleSubmit = useCallback(async () => {
     const { firstName, lastName, phone, ...data } = payload
-    if (isRegister) {
-      const response = await apiRegister(payload)
-      if (response.success) {
-        Swal.fire("Congratulation", response.mes, "success").then(() => {
-          setisRegister(false)
-          resetPayload()
-        })
-      } else Swal.fire("Oops!", response.mes, "error")
-    } else {
-      const response = await apiLogin(data)
-      if (response.success) {
-        dispatch(
-          register({
-            isLoggedIn: true,
-            token: response.accessToken,
-            userData: response.userData,
-          }),
-        )
-        navigate(`/${path.HOME}`)
-      } else Swal.fire("Oops!", response.mes, "error")
+
+    const invalids = isRegister
+      ? validate(payload, setInvalidFields)
+      : validate(data, setInvalidFields)
+
+    if (invalids === 0) {
+      if (isRegister) {
+        const response = await apiRegister(payload)
+        if (response.success) {
+          Swal.fire("Congratulation", response.mes, "success").then(() => {
+            setisRegister(false)
+            resetPayload()
+          })
+        } else Swal.fire("Oops!", response.mes, "error")
+      } else {
+        const response = await apiLogin(data)
+        if (response.success) {
+          dispatch(
+            login({
+              isLoggedIn: true,
+              token: response.accessToken,
+              userData: response.userData,
+            }),
+          )
+          navigate(`/${path.HOME}`)
+        } else Swal.fire("Oops!", response.mes, "error")
+      }
     }
   }, [payload, isRegister])
 
@@ -111,11 +125,15 @@ function Login() {
                 value={payload.firstName}
                 setValue={setPayload}
                 nameKey="firstName"
+                invalidFields={invalidFields}
+                setInvalidFieds={setInvalidFields}
               />
               <InputField
                 value={payload.lastName}
                 setValue={setPayload}
                 nameKey="lastName"
+                invalidFields={invalidFields}
+                setInvalidFieds={setInvalidFields}
               />
             </div>
           )}
@@ -123,12 +141,16 @@ function Login() {
             value={payload.email}
             setValue={setPayload}
             nameKey="email"
+            invalidFields={invalidFields}
+            setInvalidFieds={setInvalidFields}
           />
           {isRegister && (
             <InputField
               value={payload.phone}
               setValue={setPayload}
               nameKey="phone"
+              invalidFields={invalidFields}
+              setInvalidFieds={setInvalidFields}
             />
           )}
           <InputField
@@ -136,6 +158,8 @@ function Login() {
             setValue={setPayload}
             nameKey="password"
             type="password"
+            invalidFields={invalidFields}
+            setInvalidFieds={setInvalidFields}
           />
           <Button
             name={isRegister ? "Register" : "Login"}
