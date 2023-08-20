@@ -20,8 +20,8 @@ function Home() {
   // console.log({ isLoggedIn, current })
 
   return (
-    <div>
-      <div className="w-main flex">
+    <>
+      <div className="w-main flex mt-6">
         <div className="flex flex-col gap-5 w-[25%] flex-auto">
           <Sidebar />
           <DealDaily />
@@ -81,7 +81,7 @@ function Home() {
           BLOG POSTS
         </h3>
       </div>
-    </div>
+    </>
   )
 }
 

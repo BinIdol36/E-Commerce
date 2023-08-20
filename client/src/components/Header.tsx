@@ -27,12 +27,13 @@ function Header() {
           </span>
           <span>Online Support 24/7</span>
         </div>
-        <div className="flex items-center justify-center px-6 border-r gap-2">
+        <div className="flex items-center justify-center px-6 border-r gap-2 cursor-pointer">
           <BsHandbagFill color="red" />
           <span>0 item(s)</span>
         </div>
-        <div className="flex items-center justify-center px-6">
-          <FaUserCircle />
+        <div className="flex items-center justify-center px-6 gap-2 cursor-pointer">
+          <FaUserCircle size={24} color="red" />
+          <span>Profile</span>
         </div>
       </div>
     </div>
