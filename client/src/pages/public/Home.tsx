@@ -31,10 +31,10 @@ function Home() {
           <BestSeller />
         </div>
       </div>
-      <div className="my-8">
+      <div className="my-8 w-main">
         <FeatureProducts />
       </div>
-      <div className="my-8 w-full">
+      <div className="my-8 w-main">
         <h3 className="text-[20px] font-semibold py-[15px] border-b-2 border-main">
           NEW ARRIVALS
         </h3>
@@ -42,7 +42,7 @@ function Home() {
           <CustomSlider products={newProducts} />
         </div>
       </div>
-      <div className="my-8 w-full">
+      <div className="my-8 w-main">
         <h3 className="text-[20px] font-semibold py-[15px] border-b-2 border-main">
           HOT COLLECTIONS
         </h3>
@@ -76,7 +76,7 @@ function Home() {
             ))}
         </div>
       </div>
-      <div className="my-8 w-full">
+      <div className="my-8 w-main">
         <h3 className="text-[20px] font-semibold py-[15px] border-b-2 border-main">
           BLOG POSTS
         </h3>
