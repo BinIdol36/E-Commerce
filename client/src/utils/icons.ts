@@ -15,6 +15,7 @@ import {
   AiOutlineMenu,
   AiOutlineLogout,
   AiFillGift,
+  AiOutlineDown,
 } from "react-icons/ai"
 import { IoIosArrowForward } from "react-icons/io"
 
@@ -36,6 +37,7 @@ const icons = {
   AiFillGift,
   BsReplyFill,
   FaTty,
+  AiOutlineDown,
 }
 
 export default icons
