@@ -57,6 +57,11 @@ const getProducts = asyncHandler(async (req, res) => {
 			$regex: queries.category,
 			$options: 'i', // tìm kiếm không phân biệt chữ hoa chữ thường trong quá trình tìm kiếm theo mẫu
 		}
+	if (queries?.color)
+		formatedQueries.color = {
+			$regex: queries.color,
+			$options: 'i', // tìm kiếm không phân biệt chữ hoa chữ thường trong quá trình tìm kiếm theo mẫu
+		}
 
 	let queryCommand = Product.find(formatedQueries)
 
