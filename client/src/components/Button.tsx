@@ -1,13 +1,6 @@
 import React, { memo } from "react"
 
-const Button = ({
-  name,
-  handleOnClick,
-  style,
-  iconsBefore,
-  iconsAfter,
-  fw,
-}) => {
+const Button = ({ children, handleOnClick, style, fw }) => {
   return (
     <button
       type="button"
@@ -22,9 +15,7 @@ const Button = ({
         handleOnClick && handleOnClick()
       }}
     >
-      {iconsBefore}
-      <span>{name}</span>
-      {iconsAfter}
+      {children}
     </button>
   )
 }
