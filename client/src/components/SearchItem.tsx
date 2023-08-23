@@ -4,6 +4,7 @@ import { colors } from "../utils/contants"
 import { createSearchParams, useNavigate, useParams } from "react-router-dom"
 import { apiGetProducts } from "../apis"
 import { formatMoney } from "../utils/helper"
+import useDebounce from "../hooks/useDebounce"
 
 const { AiOutlineDown } = icons
 
@@ -15,7 +16,7 @@ const SearchItem = ({
 }) => {
   const [selected, setSelected] = useState([])
   const [bestPrice, setBestPrice] = useState(null)
-  const [price, setPrice] = useState([0, 0])
+  const [price, setPrice] = useState({ from: "", to: "" })
   const navigate = useNavigate()
   const { category } = useParams()
 
@@ -46,16 +47,23 @@ const SearchItem = ({
   }, [type])
 
   useEffect(() => {
-    console.log(price)
-    // const validPrice = price.filter((el) => +el > 0)
-
-    // if (price.form > 0)
-    //   navigate({
-    //     pathname: `/${category}`,
-    //     search: createSearchParams({ from: validPrice }).toString(),
-    //   })
-    // else navigate(`/${category}`)
+    if (price.from > price.to) alert("From price cannot greater than To price")
   }, [price])
+
+  const debouncePriceFrom = useDebounce(price.from, 500)
+  const debouncePriceTo = useDebounce(price.to, 500)
+
+  useEffect(() => {
+    const data = {}
+
+    if (Number(price.from) > 0) data.from = price.from
+    if (Number(price.to) > 0) data.to = price.to
+
+    navigate({
+      pathname: `/${category}`,
+      search: createSearchParams(data).toString(),
+    })
+  }, [debouncePriceFrom, debouncePriceTo])
 
   return (
     <div
@@ -112,7 +120,7 @@ const SearchItem = ({
                   bestPrice,
                 )} VND`}</span>
                 <span
-                  onClick={(e) => setSelected([])}
+                  onClick={(e) => setPrice({ from: "", to: "" })}
                   className="underline cursor-pointer hover:text-main"
                 >
                   Reset
@@ -122,32 +130,24 @@ const SearchItem = ({
                 <div className="flex items-center gap-2">
                   <label htmlFor="from">From</label>
                   <input
-                    value={price[0]}
+                    value={price.from}
                     className="form-input"
                     type="number"
                     id="from"
                     onChange={(e) =>
-                      setPrice((prev) =>
-                        prev.map((el, index) =>
-                          index === 0 ? e.target.value : el,
-                        ),
-                      )
+                      setPrice((prev) => ({ ...prev, from: e.target.value }))
                     }
                   />
                 </div>
                 <div className="flex items-center gap-2">
                   <label htmlFor="to">To</label>
                   <input
-                    value={price[1]}
+                    value={price.to}
                     className="form-input"
                     type="number"
                     id="to"
                     onChange={(e) =>
-                      setPrice((prev) =>
-                        prev.map((el, index) =>
-                          index === 1 ? e.target.value : el,
-                        ),
-                      )
+                      setPrice((prev) => ({ ...prev, to: e.target.value }))
                     }
                   />
                 </div>

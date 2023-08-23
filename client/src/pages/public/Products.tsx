@@ -1,8 +1,14 @@
 import React, { useEffect, useState, useCallback } from "react"
-import { useParams, useSearchParams } from "react-router-dom"
-import { Breadcrumb, Product, SearchItem } from "../../components"
+import {
+  useParams,
+  useSearchParams,
+  useNavigate,
+  createSearchParams,
+} from "react-router-dom"
+import { Breadcrumb, InputSelect, Product, SearchItem } from "../../components"
 import { apiGetProducts } from "../../apis"
 import Masonry from "react-masonry-css"
+import { sorts } from "../../utils/contants"
 
 const breakpointColumnsObj = {
   default: 4,
@@ -15,7 +21,9 @@ const Products = () => {
   const { category } = useParams()
   const [products, setProducts] = useState(null)
   const [activeClick, setActiveClick] = useState(null)
+  const [sort, setSort] = useState("")
   const [params] = useSearchParams()
+  const navigate = useNavigate()
 
   const fetchProductsByCategory = async (queries) => {
     const response = await apiGetProducts(queries)
@@ -29,7 +37,29 @@ const Products = () => {
     const queries = {}
     for (let i of param) queries[i[0]] = i[1]
 
-    fetchProductsByCategory(queries)
+    let priceQuery = {}
+    if (queries.to && queries.from) {
+      priceQuery = {
+        $and: [
+          {
+            price: { gte: queries.from },
+          },
+          {
+            price: { lte: queries.to },
+          },
+        ],
+      }
+      delete queries.price
+    }
+
+    if (queries.from) queries.price = { gte: queries.from }
+
+    if (queries.to) queries.price = { lte: queries.to }
+
+    delete queries.from
+    delete queries.to
+
+    fetchProductsByCategory({ ...priceQuery, ...queries })
   }, [params])
 
   const changeActiveFilter = useCallback(
@@ -39,6 +69,20 @@ const Products = () => {
     },
     [activeClick],
   )
+
+  const changeValue = useCallback(
+    (value) => {
+      setSort(value)
+    },
+    [sort],
+  )
+
+  useEffect(() => {
+    navigate({
+      pathname: `/${category}`,
+      search: createSearchParams({ sort }).toString(),
+    })
+  }, [sort])
 
   return (
     <div className="w-full">
@@ -65,7 +109,16 @@ const Products = () => {
             />
           </div>
         </div>
-        <div className="w-1/5">Sort by</div>
+        <div className="w-1/5 flex flex-col gap-3">
+          <span className="font-semibold text-sm">Sort By</span>
+          <div className="w-full">
+            <InputSelect
+              value={sort}
+              options={sorts}
+              changeValue={changeValue}
+            />
+          </div>
+        </div>
       </div>
       <div className="w-main mt-8 m-auto">
         <Masonry
@@ -78,7 +131,7 @@ const Products = () => {
           ))}
         </Masonry>
       </div>
-      <div className="w-full h-[500px]"></div>
+      <div className="w-full h-[100px]"></div>
     </div>
   )
 }
