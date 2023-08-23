@@ -45,6 +45,7 @@ const getProducts = asyncHandler(async (req, res) => {
 		macthedEl => `$${macthedEl}`,
 	)
 	const formatedQueries = JSON.parse(queryString)
+	let colorQueryObject = {}
 
 	// filtering
 	if (queries?.title)
@@ -57,13 +58,18 @@ const getProducts = asyncHandler(async (req, res) => {
 			$regex: queries.category,
 			$options: 'i', // tìm kiếm không phân biệt chữ hoa chữ thường trong quá trình tìm kiếm theo mẫu
 		}
-	if (queries?.color)
-		formatedQueries.color = {
-			$regex: queries.color,
-			$options: 'i', // tìm kiếm không phân biệt chữ hoa chữ thường trong quá trình tìm kiếm theo mẫu
-		}
+	if (queries?.color) {
+		delete formatedQueries.color
+		const colorArr = queries.color?.split(',')
+		const colorQuery = colorArr.map(el => ({
+			color: { $regex: el, $options: 'i' },
+		}))
+		colorQueryObject = { $or: colorQuery }
+	}
 
-	let queryCommand = Product.find(formatedQueries)
+	const query = { ...colorQueryObject, ...formatedQueries }
+
+	let queryCommand = Product.find(query)
 
 	// sorting
 	if (req.query.sort) {
@@ -92,7 +98,7 @@ const getProducts = asyncHandler(async (req, res) => {
 	// số lượng sp thỏa mãn điều kiện !== số lượng sản phẩm trả về 1 lần gọi API
 	try {
 		const response = await queryCommand.exec()
-		const counts = await Product.find(formatedQueries).countDocuments()
+		const counts = await Product.find(query).countDocuments()
 
 		return res.status(200).json({
 			success: response ? true : false,
