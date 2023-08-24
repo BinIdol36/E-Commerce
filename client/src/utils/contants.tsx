@@ -170,3 +170,11 @@ export const sorts = [
     text: "Date, old to new",
   },
 ]
+
+export const voteOptions = [
+  { id: 5, text: "Perfect" },
+  { id: 4, text: "Good" },
+  { id: 3, text: "neutral" },
+  { id: 2, text: "Bad" },
+  { id: 1, text: "Terrible" },
+]

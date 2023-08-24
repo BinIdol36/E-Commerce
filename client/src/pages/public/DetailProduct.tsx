@@ -51,6 +51,7 @@ const DetailProduct = () => {
       fetchProductData()
       fetchProducts()
     }
+    window.scrollTo(0, 0)
   }, [pid])
 
   const handleQuantity = useCallback(
@@ -146,7 +147,6 @@ const DetailProduct = () => {
                 handleChangleQuantity={handleChangleQuantity}
               />
             </div>
-
             <Button fw>Add to Cart</Button>
           </div>
         </div>
@@ -165,6 +165,7 @@ const DetailProduct = () => {
         <ProductInformation
           totalRating={product?.totalRating}
           totalCount={18}
+          nameProduct={product?.title}
         />
       </div>
       <div className="w-main m-auto mt-8">
