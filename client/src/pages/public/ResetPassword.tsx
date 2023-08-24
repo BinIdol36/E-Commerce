@@ -30,7 +30,7 @@ bg-white flex flex-col items-center py-8 z-50 animate-slide-right"
         />
         <div className="flex items-center justify-end w-full gap-4">
           <Button
-            name="Submit"
+            children="Submit"
             handleOnClick={handleResetPassword}
             style="px-4 py-2 rounded-md text-white bg-blue-500 text-semibold my-2"
           />

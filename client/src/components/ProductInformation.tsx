@@ -3,12 +3,60 @@ import { productInfoTabs } from "../utils/contants"
 import { Button, VoteOption, Votebar } from "."
 import { renderStarFromNumber } from "../utils/helper"
 import { apiRatings } from "../apis"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { showModal } from "../store/app/appSlice"
+import Swal from "sweetalert2"
+import path from "../utils/path"
+import { useNavigate } from "react-router-dom"
 
-const ProductInformation = ({ totalRating, totalCount, nameProduct }) => {
+const ProductInformation = ({
+  totalRating,
+  ratings,
+  nameProduct,
+  pid,
+  rerender,
+}) => {
   const [activedTab, setActivedTab] = useState(1)
   const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const { isLoggedIn } = useSelector((state) => state.user)
+
+  const handleSubmitVoteOption = async ({ comment, score }) => {
+    console.log({ comment, score, pid })
+    if (!comment || !pid || !score) {
+      alert("Please vote when click submit")
+      return
+    }
+
+    await apiRatings({ star: score, comment, pid })
+    dispatch(showModal({ isShowModal: false, modalChildren: null }))
+    rerender()
+  }
+
+  const handleVoteNow = () => {
+    if (!isLoggedIn)
+      Swal.fire({
+        text: "Login to vote",
+        cancelButtonText: "Cancel",
+        confirmButtonText: "Go login",
+        title: "Oops!",
+        showCancelButton: true,
+      }).then((rs) => {
+        if (rs.isConfirmed) navigate(`/${path.LOGIN}`)
+      })
+    else
+      dispatch(
+        showModal({
+          isShowModal: true,
+          modalChildren: (
+            <VoteOption
+              handleSubmitVoteOption={handleSubmitVoteOption}
+              nameProduct={nameProduct}
+            />
+          ),
+        }),
+      )
+  }
 
   return (
     <div>
@@ -48,7 +96,7 @@ const ProductInformation = ({ totalRating, totalCount, nameProduct }) => {
                     <span key={index}>{el}</span>
                   ))}
                 </span>
-                <span className="text-sm">{`${totalCount} reviewer and commentors`}</span>
+                <span className="text-sm">{`${ratings?.length} reviewer and commentors`}</span>
               </div>
               <div className="flex-6 border flex gap-2 flex-col p-4">
                 {Array.from(Array(5).keys())
@@ -57,26 +105,17 @@ const ProductInformation = ({ totalRating, totalCount, nameProduct }) => {
                     <Votebar
                       key={el}
                       number={el + 1}
-                      ratingTotal={5}
-                      ratingCount={2}
+                      ratingTotal={ratings?.length}
+                      ratingCount={
+                        ratings?.filter((i) => i.star === el + 1)?.length
+                      }
                     />
                   ))}
               </div>
             </div>
             <div className="p-4 flex flex-col gap-2 items-center justify-center text-sm">
               <span>Do you review this product?</span>
-              <Button
-                handleOnClick={() =>
-                  dispatch(
-                    showModal({
-                      isShowModal: true,
-                      modalChildren: <VoteOption nameProduct={nameProduct} />,
-                    }),
-                  )
-                }
-              >
-                Vote now!
-              </Button>
+              <Button handleOnClick={handleVoteNow}>Vote now!</Button>
             </div>
           </div>
         )}
