@@ -1,7 +1,12 @@
 import React, { memo, useState, useEffect } from "react"
 import icons from "../utils/icons"
 import { colors } from "../utils/contants"
-import { createSearchParams, useNavigate, useParams } from "react-router-dom"
+import {
+  createSearchParams,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom"
 import { apiGetProducts } from "../apis"
 import { formatMoney } from "../utils/helper"
 import useDebounce from "../hooks/useDebounce"
@@ -19,13 +24,14 @@ const SearchItem = ({
   const [price, setPrice] = useState({ from: "", to: "" })
   const navigate = useNavigate()
   const { category } = useParams()
+  const [params] = useSearchParams()
 
   const handleSelect = (e) => {
     const alreadyEl = selected.find((el) => el === e.target.value)
     if (alreadyEl)
       setSelected((prev) => prev.filter((el) => el !== e.target.value))
     else setSelected((prev) => [...prev, e.target.value])
-    // changeActiveFilter(null)
+    changeActiveFilter(null)
   }
 
   const fetchBestPriceProduct = async () => {
@@ -34,12 +40,21 @@ const SearchItem = ({
   }
 
   useEffect(() => {
-    if (selected.length > 0)
-      navigate({
-        pathname: `/${category}`,
-        search: createSearchParams({ color: selected.join(",") }).toString(),
-      })
-    else navigate(`/${category}`)
+    let param = []
+    for (let i of params.entries()) param.push(i)
+
+    const queries = {}
+    for (let i of param) queries[i[0]] = i[1]
+
+    if (selected.length > 0) {
+      queries.color = selected.join(",")
+      queries.page = 1
+    } else delete queries.color
+
+    navigate({
+      pathname: `/${category}`,
+      search: createSearchParams(queries).toString(),
+    })
   }, [selected])
 
   useEffect(() => {
@@ -47,21 +62,30 @@ const SearchItem = ({
   }, [type])
 
   useEffect(() => {
-    if (price.from > price.to) alert("From price cannot greater than To price")
+    if (price.from && price.to && price.from > price.to)
+      alert("From price cannot greater than To price")
   }, [price])
 
   const debouncePriceFrom = useDebounce(price.from, 500)
   const debouncePriceTo = useDebounce(price.to, 500)
 
   useEffect(() => {
-    const data = {}
+    let param = []
+    for (let i of params.entries()) param.push(i)
 
-    if (Number(price.from) > 0) data.from = price.from
-    if (Number(price.to) > 0) data.to = price.to
+    const queries = {}
+    for (let i of param) queries[i[0]] = i[1]
+
+    if (Number(price.from) > 0) queries.from = price.from
+    else delete queries.from
+    if (Number(price.to) > 0) queries.to = price.to
+    else delete queries.to
+
+    queries.page = 1
 
     navigate({
       pathname: `/${category}`,
-      search: createSearchParams(data).toString(),
+      search: createSearchParams(queries).toString(),
     })
   }, [debouncePriceFrom, debouncePriceTo])
 
@@ -83,7 +107,10 @@ const SearchItem = ({
               <div className="p-4 items-center flex justify-between gap-8 border-b">
                 <span className="whitespace-nowrap">{`${selected.length} selected`}</span>
                 <span
-                  onClick={(e) => setSelected([])}
+                  onClick={(e) => {
+                    setSelected([])
+                    changeActiveFilter(null)
+                  }}
                   className="underline cursor-pointer hover:text-main"
                 >
                   Reset
@@ -120,7 +147,10 @@ const SearchItem = ({
                   bestPrice,
                 )} VND`}</span>
                 <span
-                  onClick={(e) => setPrice({ from: "", to: "" })}
+                  onClick={(e) => {
+                    setPrice({ from: "", to: "" })
+                    changeActiveFilter(null)
+                  }}
                   className="underline cursor-pointer hover:text-main"
                 >
                   Reset

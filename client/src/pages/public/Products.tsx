@@ -33,7 +33,7 @@ const Products = () => {
 
   const fetchProductsByCategory = async (queries) => {
     const response = await apiGetProducts(queries)
-    if (response.success) setProducts(response.products)
+    if (response.success) setProducts(response)
   }
 
   useEffect(() => {
@@ -56,16 +56,16 @@ const Products = () => {
         ],
       }
       delete queries.price
+    } else {
+      if (queries.from) queries.price = { gte: queries.from }
+      if (queries.to) queries.price = { lte: queries.to }
     }
-
-    if (queries.from) queries.price = { gte: queries.from }
-
-    if (queries.to) queries.price = { lte: queries.to }
 
     delete queries.from
     delete queries.to
 
     fetchProductsByCategory({ ...priceQuery, ...queries })
+    window.scrollTo(0, 0)
   }, [params])
 
   const changeActiveFilter = useCallback(
@@ -84,10 +84,12 @@ const Products = () => {
   )
 
   useEffect(() => {
-    navigate({
-      pathname: `/${category}`,
-      search: createSearchParams({ sort }).toString(),
-    })
+    if (sort) {
+      navigate({
+        pathname: `/${category}`,
+        search: createSearchParams({ sort }).toString(),
+      })
+    }
   }, [sort])
 
   return (
@@ -132,13 +134,13 @@ const Products = () => {
           className="my-masonry-grid mx-[-10px]"
           columnClassName="my-masonry-grid_column"
         >
-          {products?.map((el) => (
+          {products?.products?.map((el) => (
             <Product key={el._id} pid={el._id} productData={el} normal={true} />
           ))}
         </Masonry>
       </div>
       <div className="w-main m-aut my-4 flex justify-end">
-        <Pagination />
+        <Pagination totalCount={products?.counts} />
       </div>
       <div className="w-full h-[100px]"></div>
     </div>
