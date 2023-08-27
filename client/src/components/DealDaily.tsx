@@ -1,11 +1,7 @@
 import React, { useState, useEffect, memo } from "react"
-import icons from "../utils/icons"
-import { apiGetProducts } from "../apis/product"
-import {
-  renderStarFromNumber,
-  formatMoney,
-  secondsToHms,
-} from "../utils/helper"
+import icons from "@/utils/icons"
+import { apiGetProducts } from "@/apis/product"
+import { renderStarFromNumber, formatMoney, secondsToHms } from "@/utils/helper"
 import { Countdown } from "./"
 import moment from "moment"
 

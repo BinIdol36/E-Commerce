@@ -1,7 +1,7 @@
 import React from "react"
 // Outlet: đại diện cho phần con của Public trên đường dẫn URL
 import { Outlet } from "react-router-dom"
-import { Header, Navigation, TopHeader, Footer } from "../../components"
+import { Header, Navigation, TopHeader, Footer } from "@/components"
 
 function Public() {
   return (

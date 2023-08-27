@@ -11,13 +11,13 @@ import {
   Products,
   FinalRegister,
   ResetPassword,
-} from "./pages/public"
-import path from "./utils/path"
-import { getCategories } from "./store/app/asyncActions"
+} from "@/pages/public"
+import path from "@/utils/path"
+import { getCategories } from "@/store/app/asyncActions"
 import { useDispatch, useSelector } from "react-redux"
 import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
-import { Modal } from "./components"
+import { Modal } from "@/components"
 
 function App() {
   const dispatch = useDispatch()

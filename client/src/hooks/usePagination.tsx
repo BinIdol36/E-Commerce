@@ -1,6 +1,6 @@
 import React, { useMemo } from "react"
-import { generateRange } from "../utils/helper"
-import icons from "../utils/icons"
+import { generateRange } from "@/utils/helper"
+import icons from "@/utils/icons"
 
 const { BiDotsHorizontalRounded } = icons
 

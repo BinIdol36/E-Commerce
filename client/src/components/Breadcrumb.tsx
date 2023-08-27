@@ -1,7 +1,7 @@
 import React from "react"
 import { Link } from "react-router-dom"
 import useBreadcrumbs from "use-react-router-breadcrumbs"
-import icons from "../utils/icons"
+import icons from "@/utils/icons"
 const { IoIosArrowForward } = icons
 
 const Breadcrumb = ({ title, category }) => {

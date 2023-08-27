@@ -6,9 +6,9 @@ import {
   DealDaily,
   FeatureProducts,
   CustomSlider,
-} from "../../components"
+} from "@/components"
 import { useSelector } from "react-redux"
-import icons from "../../utils/icons"
+import icons from "@/utils/icons"
 
 const { IoIosArrowForward } = icons
 

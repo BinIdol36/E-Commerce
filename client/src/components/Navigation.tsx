@@ -1,7 +1,7 @@
 import React from "react"
-import { navigation } from "../utils/contants"
+import { navigation } from "@/utils/contants"
 import { NavLink } from "react-router-dom"
-import path from "../utils/path"
+import path from "@/utils/path"
 
 function Navigation() {
   return (

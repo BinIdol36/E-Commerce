@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react"
 import { useParams } from "react-router-dom"
-import { apiGetProduct, apiGetProducts } from "../../apis"
+import { apiGetProduct, apiGetProducts } from "@/apis"
 import {
   Breadcrumb,
   Button,
@@ -8,15 +8,11 @@ import {
   ProdcutExtraInfoItem,
   ProductInformation,
   CustomSlider,
-} from "../../components"
+} from "@/components"
 import Slider from "react-slick"
 import ReactImageMagnify from "react-image-magnify"
-import {
-  formatMoney,
-  formatPrice,
-  renderStarFromNumber,
-} from "../../utils/helper"
-import { prodcutExtraInfomation } from "../../utils/contants"
+import { formatMoney, formatPrice, renderStarFromNumber } from "@/utils/helper"
+import { prodcutExtraInfomation } from "@/utils/contants"
 
 const settings = {
   dots: false, // index

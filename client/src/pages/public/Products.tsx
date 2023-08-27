@@ -11,10 +11,10 @@ import {
   Pagination,
   Product,
   SearchItem,
-} from "../../components"
-import { apiGetProducts } from "../../apis"
+} from "@/components"
+import { apiGetProducts } from "@/apis"
 import Masonry from "react-masonry-css"
-import { sorts } from "../../utils/contants"
+import { sorts } from "@/utils/contants"
 
 const breakpointColumnsObj = {
   default: 4,

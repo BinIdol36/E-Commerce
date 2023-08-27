@@ -1,15 +1,15 @@
 import React, { memo, useState, useEffect } from "react"
-import icons from "../utils/icons"
-import { colors } from "../utils/contants"
+import icons from "@/utils/icons"
+import { colors } from "@/utils/contants"
 import {
   createSearchParams,
   useNavigate,
   useParams,
   useSearchParams,
 } from "react-router-dom"
-import { apiGetProducts } from "../apis"
-import { formatMoney } from "../utils/helper"
-import useDebounce from "../hooks/useDebounce"
+import { apiGetProducts } from "@/apis"
+import { formatMoney } from "@/utils/helper"
+import useDebounce from "@/hooks/useDebounce"
 
 const { AiOutlineDown } = icons
 

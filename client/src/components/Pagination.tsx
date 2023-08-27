@@ -1,5 +1,5 @@
 import React from "react"
-import usePagination from "../hooks/usePagination"
+import usePagination from "@/hooks/usePagination"
 import { useSearchParams } from "react-router-dom"
 import { PaginationItem } from "."
 

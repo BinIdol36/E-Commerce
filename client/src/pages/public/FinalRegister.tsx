@@ -1,6 +1,6 @@
 import React, { useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
-import path from "../../utils/path"
+import path from "@/utils/path"
 import Swal from "sweetalert2"
 
 const FinalRegister = () => {
