@@ -1,4 +1,4 @@
-import React from "react"
+import React, { memo } from "react"
 import { NavLink } from "react-router-dom"
 import { createSlug } from "@/utils/helper"
 import { useSelector } from "react-redux"
@@ -25,4 +25,4 @@ function Sidebar() {
   )
 }
 
-export default Sidebar
+export default memo(Sidebar)

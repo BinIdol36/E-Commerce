@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import React from "react"
+import React, { memo } from "react"
 import {
   useSearchParams,
   useNavigate,
@@ -46,4 +46,4 @@ const PaginationItem = ({ children }) => {
   )
 }
 
-export default PaginationItem
+export default memo(PaginationItem)

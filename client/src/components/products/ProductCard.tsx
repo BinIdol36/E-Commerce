@@ -1,4 +1,4 @@
-import React from "react"
+import React, { memo } from "react"
 import { formatMoney, renderStarFromNumber } from "@/utils/helper"
 
 const ProductCard = ({ price, totalRating, title, image }) => {
@@ -26,4 +26,4 @@ const ProductCard = ({ price, totalRating, title, image }) => {
   )
 }
 
-export default ProductCard
+export default memo(ProductCard)

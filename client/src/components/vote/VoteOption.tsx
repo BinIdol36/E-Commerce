@@ -2,7 +2,7 @@ import React, { memo, useRef, useEffect, useState } from "react"
 import logo from "@/assets/logo.png"
 import { voteOptions } from "@/utils/contants"
 import icons from "@/utils/icons"
-import { Button } from "."
+import { Button } from "@/components"
 
 const { AiFillStar } = icons
 

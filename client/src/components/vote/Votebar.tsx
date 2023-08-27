@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react"
+import React, { useRef, useEffect, memo } from "react"
 import icons from "@/utils/icons"
 const { AiFillStar } = icons
 
@@ -31,4 +31,4 @@ const Votebar = ({ number, ratingCount, ratingTotal }) => {
   )
 }
 
-export default Votebar
+export default memo(Votebar)

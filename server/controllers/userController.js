@@ -70,7 +70,7 @@ const register = asyncHandler(async (req, res) => {
 
 		setTimeout(async () => {
 			await User.deleteOne({ email: emailedited })
-		}, [300000])
+		}, 300000)
 
 		return res.json({
 			success: newUser ? true : false,

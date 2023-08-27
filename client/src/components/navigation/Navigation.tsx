@@ -1,7 +1,6 @@
-import React from "react"
+import React, { memo } from "react"
 import { navigation } from "@/utils/contants"
 import { NavLink } from "react-router-dom"
-import path from "@/utils/path"
 
 function Navigation() {
   return (
@@ -23,4 +22,4 @@ function Navigation() {
   )
 }
 
-export default Navigation
+export default memo(Navigation)

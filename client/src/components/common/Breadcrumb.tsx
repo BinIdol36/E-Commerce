@@ -1,4 +1,4 @@
-import React from "react"
+import React, { memo } from "react"
 import { Link } from "react-router-dom"
 import useBreadcrumbs from "use-react-router-breadcrumbs"
 import icons from "@/utils/icons"
@@ -29,4 +29,4 @@ const Breadcrumb = ({ title, category }) => {
   )
 }
 
-export default Breadcrumb
+export default memo(Breadcrumb)

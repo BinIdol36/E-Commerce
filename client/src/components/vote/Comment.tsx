@@ -1,4 +1,4 @@
-import React from "react"
+import React, { memo } from "react"
 import avatar from "@/assets/avater_default.png"
 import moment from "moment"
 import { renderStarFromNumber } from "@/utils/helper"
@@ -43,4 +43,4 @@ const Comment = ({
   )
 }
 
-export default Comment
+export default memo(Comment)

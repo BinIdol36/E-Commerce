@@ -1,8 +1,8 @@
-import React, { useState } from "react"
+import React, { useState, memo } from "react"
 import { formatMoney, renderStarFromNumber } from "@/utils/helper"
 import trending from "@/assets/trending.png"
 import label from "@/assets/new.png"
-import { SelectOption } from "./"
+import { SelectOption } from ".."
 import icons from "@/utils/icons"
 import { Link } from "react-router-dom"
 
@@ -66,4 +66,4 @@ const Product = ({ productData, isNew, normal }) => {
   )
 }
 
-export default Product
+export default memo(Product)

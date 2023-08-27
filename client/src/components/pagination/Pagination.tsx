@@ -1,7 +1,7 @@
-import React from "react"
+import React, { memo } from "react"
 import usePagination from "@/hooks/usePagination"
 import { useSearchParams } from "react-router-dom"
-import { PaginationItem } from "."
+import { PaginationItem } from ".."
 
 const Pagination = ({ totalCount, productNumber }) => {
   const pagination = usePagination(totalCount, 2)
@@ -37,4 +37,4 @@ const Pagination = ({ totalCount, productNumber }) => {
   )
 }
 
-export default Pagination
+export default memo(Pagination)
