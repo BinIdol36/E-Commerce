@@ -14,10 +14,12 @@ const {
 	updateUserAddress,
 	updateCart,
 	finalregister,
+	createUsers,
 } = require('../controllers/userController')
 const { verifyAccessToken, isAdmin } = require('../middlewares/verifyToken')
 
 router.post('/register', register)
+router.post('/mock', createUsers)
 // router.get('/finalregister/:token', finalregister)
 router.put('/finalregister/:token', finalregister)
 router.post('/login', login)

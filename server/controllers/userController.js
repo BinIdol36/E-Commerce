@@ -8,7 +8,7 @@ const {
 } = require('../middlewares/jwt')
 const jwt = require('jsonwebtoken')
 const sendMail = require('../utils/sendMail')
-const { set } = require('mongoose')
+const { users } = require('../utils/constant')
 
 // const register = asyncHandler(async (req, res) => {
 // 	const { firstName, lastName, email, password, phone } = req.body
@@ -294,12 +294,70 @@ const resetPassword = asyncHandler(async (req, res) => {
 })
 
 const getUsers = asyncHandler(async (req, res) => {
-	const response = await User.find().select('-refreshToken -password')
+	const queries = { ...req.query }
 
-	return res.status(200).json({
-		success: response ? true : false,
-		users: response,
-	})
+	// tách các trường đặt biệt ra khỏi query
+	const excludeFields = ['limit', 'sort', 'page', 'fields']
+
+	// xóa những trường excludeFields ra khỏi query
+	excludeFields.forEach(el => delete queries[el])
+
+	// format lại các operators cho đúng cú pháp mongoose
+	let queryString = JSON.stringify(queries)
+	// thay thế các từ đơn như "gte", "gt", "lt", "lte" => dạng "$gte", "$gt", "$lt", "$lte"
+	queryString = queryString.replace(
+		// biểu thức chính quy sử dụng để tìm các từ đơn ("gte", "gt", "lt", "lte") nằm độc lập giữa các ranh giới từ
+		/\b(gte|gt|lt|lte)\b/g,
+		macthedEl => `$${macthedEl}`,
+	)
+	const formatedQueries = JSON.parse(queryString)
+
+	// filtering
+	if (queries?.name)
+		formatedQueries.name = {
+			$regex: queries.name,
+			$options: 'i', // tìm kiếm không phân biệt chữ hoa chữ thường trong quá trình tìm kiếm theo mẫu
+		}
+
+	let queryCommand = User.find(formatedQueries)
+
+	// sorting
+	if (req.query.sort) {
+		const sortBy = req.query.sort.split(',').join()
+		queryCommand = queryCommand.sort(sortBy)
+	}
+
+	// fields limiting
+	if (req.query.fields) {
+		const fields = req.query.fields.split(',').join(' ')
+		queryCommand = queryCommand.select(fields)
+	}
+
+	// pagination
+	// limit: số object lấy về 1 lần gọi API
+	// skip: 2
+	// 1 2 3 ... 10
+	// +2 => 2
+	// +dasdads => NaN
+	const page = +req.query.page || 1
+	const limit = +req.query.limit || process.env.LIMIT_PRODUCTS
+	const skip = (page - 1) * limit
+	queryCommand.skip(skip).limit(limit)
+
+	// execute query
+	// số lượng sp thỏa mãn điều kiện !== số lượng sản phẩm trả về 1 lần gọi API
+	try {
+		const response = await queryCommand.exec()
+		const counts = await User.find(formatedQueries).countDocuments()
+
+		return res.status(200).json({
+			success: response ? true : false,
+			counts,
+			users: response ? response : "Can't get product",
+		})
+	} catch (err) {
+		throw new Error(err.message)
+	}
 })
 
 const deleteUser = asyncHandler(async (req, res) => {
@@ -419,6 +477,15 @@ const updateCart = asyncHandler(async (req, res) => {
 	}
 })
 
+const createUsers = asyncHandler(async (req, res) => {
+	const response = await User.create(users)
+
+	return res.status(200).json({
+		success: response ? true : false,
+		users: response ? response : 'some thing went wrong',
+	})
+})
+
 module.exports = {
 	register,
 	login,
@@ -434,4 +501,5 @@ module.exports = {
 	updateUserAddress,
 	updateCart,
 	finalregister,
+	createUsers,
 }
