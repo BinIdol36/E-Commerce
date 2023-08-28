@@ -313,11 +313,30 @@ const getUsers = asyncHandler(async (req, res) => {
 	const formatedQueries = JSON.parse(queryString)
 
 	// filtering
-	if (queries?.name)
-		formatedQueries.name = {
-			$regex: queries.name,
-			$options: 'i', // tìm kiếm không phân biệt chữ hoa chữ thường trong quá trình tìm kiếm theo mẫu
-		}
+	if (req.query.q) {
+		delete formatedQueries.q
+
+		formatedQueries['$or'] = [
+			{
+				firstName: {
+					$regex: req.query.q,
+					$options: 'i', // tìm kiếm không phân biệt chữ hoa chữ thường trong quá trình tìm kiếm theo mẫu
+				},
+			},
+			{
+				lastName: {
+					$regex: req.query.q,
+					$options: 'i', // tìm kiếm không phân biệt chữ hoa chữ thường trong quá trình tìm kiếm theo mẫu
+				},
+			},
+			{
+				email: {
+					$regex: req.query.q,
+					$options: 'i', // tìm kiếm không phân biệt chữ hoa chữ thường trong quá trình tìm kiếm theo mẫu
+				},
+			},
+		]
+	}
 
 	let queryCommand = User.find(formatedQueries)
 
