@@ -13,11 +13,15 @@ const Select = ({
   defaultValue,
 }) => {
   return (
-    <div className="flex flex-col gap-2">
+    <div className={clsx("flex flex-col gap-2", style)}>
       {label && <label htmlFor={id}>{label}</label>}
       <select
         defaultValue={defaultValue}
-        className={clsx("form-select", fullwidth && "w-full", style)}
+        className={clsx(
+          "form-select max-h-[42px]",
+          fullwidth && "w-full",
+          style,
+        )}
         id={id}
         {...register(id, validate)}
       >
