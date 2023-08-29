@@ -1,7 +1,8 @@
 import { apiGetUsers, apiUpdateUser, apiDeleteUser } from "@/apis"
 import { InputField, InputForm, Pagination, Select, Button } from "@/components"
 import useDebounce from "@/hooks/useDebounce"
-import { roles } from "@/utils/contants"
+import { roles, blockStatus } from "@/utils/contants"
+import clsx from "clsx"
 import moment from "moment"
 import React, { useCallback, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
@@ -14,13 +15,14 @@ const ManageUsers = () => {
     handleSubmit,
     register,
     formState: { errors },
+    reset,
   } = useForm({
     email: "",
     firstName: "",
     lastName: "",
     role: "",
     phone: "",
-    status: "",
+    isBlocked: "",
   })
   const [users, setUsers] = useState(null)
   const [queries, setQueries] = useState({
@@ -77,8 +79,16 @@ const ManageUsers = () => {
     })
   }
 
+  // useEffect(() => {
+  //   if (editElm)
+  //     reset({
+  //       role: editElm.role,
+  //       isBlocked: editElm.isBlocked,
+  //     })
+  // }, [editElm])
+
   return (
-    <div className="w-full">
+    <div className={clsx("w-full", editElm && "pl-12")}>
       <h1
         className="h-[75px] flex justify-between 
       items-center text-3xl font-bold px-4 border-b"
@@ -166,7 +176,15 @@ const ManageUsers = () => {
                   </td>
                   <td className="py-2 px-4">
                     {editElm?._id === el._id ? (
-                      <Select />
+                      <Select
+                        register={register}
+                        fullWidth
+                        errors={errors}
+                        id={"role"}
+                        validate={{ required: "Require fill." }}
+                        defaultValue={+el.role}
+                        options={roles}
+                      />
                     ) : (
                       <span>
                         {roles.find((role) => +role.code === +el.role)?.value}
@@ -195,7 +213,15 @@ const ManageUsers = () => {
                   </td>
                   <td className="py-2 px-4">
                     {editElm?._id === el._id ? (
-                      <Select />
+                      <Select
+                        register={register}
+                        fullWidth
+                        errors={errors}
+                        id={"isBlocked"}
+                        validate={{ required: "Require fill." }}
+                        defaultValue={el.isBlocked}
+                        options={blockStatus}
+                      />
                     ) : (
                       <span>{el.isBlocked ? "Block" : "Active"}</span>
                     )}
