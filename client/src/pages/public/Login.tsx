@@ -178,6 +178,7 @@ function Login() {
                 nameKey="firstName"
                 invalidFields={invalidFields}
                 setInvalidFieds={setInvalidFields}
+                fullWidth
               />
               <InputField
                 value={payload.lastName}
@@ -185,6 +186,7 @@ function Login() {
                 nameKey="lastName"
                 invalidFields={invalidFields}
                 setInvalidFieds={setInvalidFields}
+                fullWidth
               />
             </div>
           )}
@@ -194,6 +196,7 @@ function Login() {
             nameKey="email"
             invalidFields={invalidFields}
             setInvalidFieds={setInvalidFields}
+            fullWidth
           />
           {isRegister && (
             <InputField
@@ -202,6 +205,7 @@ function Login() {
               nameKey="phone"
               invalidFields={invalidFields}
               setInvalidFieds={setInvalidFields}
+              fullWidth
             />
           )}
           <InputField
@@ -211,6 +215,7 @@ function Login() {
             type="password"
             invalidFields={invalidFields}
             setInvalidFieds={setInvalidFields}
+            fullWidth
           />
           <Button
             children={isRegister ? "Register" : "Login"}
