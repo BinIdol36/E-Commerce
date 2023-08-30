@@ -1,5 +1,6 @@
-import { InputForm, Select, Button } from "@/components"
-import React from "react"
+import { InputForm, Select, Button, MarkdownEdit } from "@/components"
+import { validate } from "@/utils/helper"
+import React, { useCallback, useState } from "react"
 import { useForm } from "react-hook-form"
 import { useSelector } from "react-redux"
 
@@ -12,12 +13,31 @@ const CreateProducts = () => {
     handleSubmit,
     watch,
   } = useForm()
+  const [payload, setPayload] = useState({
+    description: "",
+  })
+  const [invalidFields, setInvalidFields] = useState([])
+
+  const changeValue = useCallback(
+    (e) => {
+      setPayload(e)
+    },
+    [payload],
+  )
 
   const handleCreateProduct = (data) => {
-    if (data.category)
-      data.category = categories?.find((el) => el._id === data.category)?.title
+    const invalids = validate(payload, setInvalidFields)
+    if (invalids === 0) {
+      if (data.category)
+        data.category = categories?.find(
+          (el) => el._id === data.category,
+        )?.title
 
-    console.log(data)
+      const finalPayload = { ...data, ...payload }
+      const formData = new FormData()
+
+      for (let i of Object.entries(finalPayload)) formData.append(i[0], i[1])
+    }
   }
 
   return (
@@ -107,7 +127,47 @@ const CreateProducts = () => {
               fullWidth
             />
           </div>
-          <Button type={"submit"}>Create new product</Button>
+          <MarkdownEdit
+            name={"description"}
+            changeValue={changeValue}
+            label={"Description"}
+            invalidFields={invalidFields}
+            setInvalidFields={setInvalidFields}
+          />
+          <div className="flex flex-col gap-2 mt-8">
+            <label className="font-semibold" htmlFor="thumb">
+              Upload thumb
+            </label>
+            <input
+              type="file"
+              id="thumb"
+              {...register("thumb", { required: "Need fill this field" })}
+            />
+            {errors["thumb"] && (
+              <small className="text-xs text-red-500">
+                {errors["thumb"]?.message}
+              </small>
+            )}
+          </div>
+          <div className="flex flex-col gap-2 mt-8">
+            <label className="font-semibold" htmlFor="prodcuts">
+              Upload images of product
+            </label>
+            <input
+              type="file"
+              id="prodcuts"
+              multiple
+              {...register("images", { required: "Need fill this field" })}
+            />
+            {errors["images"] && (
+              <small className="text-xs text-red-500">
+                {errors["images"]?.message}
+              </small>
+            )}
+          </div>
+          <div className="mt-6">
+            <Button type={"submit"}>Create new product</Button>
+          </div>
         </form>
       </div>
     </div>
