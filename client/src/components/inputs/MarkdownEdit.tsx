@@ -14,7 +14,7 @@ const MarkdownEdit = ({
       <span className="">{label}</span>
       <Editor
         apiKey={import.meta.env.VITE_REACT_APP_MCETINY}
-        onInit={(evt, editor) => (editorRef.current = editor)}
+        // onInit={(evt, editor) => (editorRef.current = editor)}
         initialValue={value}
         init={{
           height: 500,

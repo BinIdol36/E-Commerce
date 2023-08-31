@@ -1,8 +1,11 @@
 import { InputForm, Select, Button, MarkdownEdit } from "@/components"
-import { validate } from "@/utils/helper"
-import React, { useCallback, useState } from "react"
-import { useForm } from "react-hook-form"
+import { getBase64, validate } from "@/utils/helper"
+import icons from "@/utils/icons"
+import React, { useCallback, useEffect, useState } from "react"
+import { set, useForm } from "react-hook-form"
 import { useSelector } from "react-redux"
+import { toast } from "react-toastify"
+const { RiDeleteBin2Fill } = icons
 
 const CreateProducts = () => {
   const { categories } = useSelector((state) => state.app)
@@ -17,6 +20,11 @@ const CreateProducts = () => {
     description: "",
   })
   const [invalidFields, setInvalidFields] = useState([])
+  const [preview, setPreview] = useState({
+    thumb: null,
+    images: [],
+  })
+  const [hoverElm, setHoverElm] = useState(null)
 
   const changeValue = useCallback(
     (e) => {
@@ -24,6 +32,33 @@ const CreateProducts = () => {
     },
     [payload],
   )
+
+  const handlePreviewThumb = async (file) => {
+    const base64Thumb = await getBase64(file)
+    setPreview((prev) => ({ ...prev, thumb: base64Thumb }))
+  }
+
+  const handlePreviewImages = async (files) => {
+    const imagesPreview = []
+    for (let file of files) {
+      if (file.type !== "image/png" && file.type !== "image/jpeg") {
+        toast.warning("File not support!")
+        return
+      }
+      const base64 = await getBase64(file)
+      imagesPreview.push({ name: file.name, path: base64 })
+    }
+    if (imagesPreview.length > 0)
+      setPreview((prev) => ({ ...prev, images: imagesPreview }))
+  }
+
+  useEffect(() => {
+    handlePreviewThumb(watch("thumb")[0])
+  }, [watch("thumb")])
+
+  useEffect(() => {
+    handlePreviewImages(watch("images"))
+  }, [watch("images")])
 
   const handleCreateProduct = (data) => {
     const invalids = validate(payload, setInvalidFields)
@@ -38,6 +73,20 @@ const CreateProducts = () => {
 
       for (let i of Object.entries(finalPayload)) formData.append(i[0], i[1])
     }
+  }
+
+  const handleRemoveImage = (name) => {
+    const files = [...watch("images")]
+
+    reset({
+      images: files?.filter((el) => el.name !== name),
+    })
+
+    if (preview.images?.some((el) => el.name === name))
+      setPreview((prev) => ({
+        ...prev,
+        images: prev.images?.filter((el) => el.name !== name),
+      }))
   }
 
   return (
@@ -149,6 +198,15 @@ const CreateProducts = () => {
               </small>
             )}
           </div>
+          {preview.thumb && (
+            <div className="my-4">
+              <img
+                src={preview.thumb}
+                alt="thumbnail"
+                className="w-[200px] object-contain"
+              />
+            </div>
+          )}
           <div className="flex flex-col gap-2 mt-8">
             <label className="font-semibold" htmlFor="prodcuts">
               Upload images of product
@@ -165,6 +223,33 @@ const CreateProducts = () => {
               </small>
             )}
           </div>
+          {preview.images.length > 0 && (
+            <div className="my-4 flex w-full gap-3 flex-wrap">
+              {preview.images?.map((el, index) => (
+                <div
+                  onMouseEnter={() => setHoverElm(el.name)}
+                  onMouseLeave={() => setHoverElm(null)}
+                  className="w-fit relative"
+                  key={index}
+                >
+                  <img
+                    src={el.path}
+                    alt="product"
+                    className="w-[200px] object-contain"
+                  />
+                  {hoverElm === el.name && (
+                    <div
+                      onClick={() => handleRemoveImage(el.name)}
+                      className="absolute animate-scale-up-center inset-0 
+                    bg-overlay flex items-center justify-center cursor-pointer"
+                    >
+                      <RiDeleteBin2Fill size={24} color="white" />
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
           <div className="mt-6">
             <Button type={"submit"}>Create new product</Button>
           </div>
