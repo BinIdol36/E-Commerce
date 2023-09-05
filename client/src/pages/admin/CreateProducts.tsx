@@ -1,15 +1,18 @@
 import { apiCreateProduct } from "@/apis"
-import { InputForm, Select, Button, MarkdownEdit } from "@/components"
+import { InputForm, Select, Button, MarkdownEdit, Loading } from "@/components"
+import { showModal } from "@/store/app/appSlice"
 import { getBase64, validate } from "@/utils/helper"
 import icons from "@/utils/icons"
 import React, { useCallback, useEffect, useState } from "react"
-import { set, useForm } from "react-hook-form"
-import { useSelector } from "react-redux"
+import { useForm } from "react-hook-form"
+import { useSelector, useDispatch } from "react-redux"
 import { toast } from "react-toastify"
+
 const { RiDeleteBin2Fill } = icons
 
 const CreateProducts = () => {
   const { categories } = useSelector((state) => state.app)
+  const dispatch = useDispatch()
   const {
     register,
     formState: { errors },
@@ -79,9 +82,20 @@ const CreateProducts = () => {
         for (let image of finalPayload.images) formData.append("images", image)
       }
 
+      dispatch(showModal({ isShowModal: true, modalChildren: <Loading /> }))
+
       const response = await apiCreateProduct(formData)
 
-      console.log(response)
+      dispatch(showModal({ isShowModal: false, modalChildren: null }))
+
+      if (response.success) {
+        toast.success(response.mes)
+        reset()
+        setPayload({
+          thumb: null,
+          images: [],
+        })
+      } else toast.error(response.mes)
     }
   }
 

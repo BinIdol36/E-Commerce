@@ -18,7 +18,7 @@ const createProduct = asyncHandler(async (req, res) => {
 
 	return res.status(200).json({
 		success: newProduct ? true : false,
-		createProduct: newProduct ? newProduct : "Can't create new product",
+		mes: newProduct ? 'Created' : 'Failed.',
 	})
 })
 
