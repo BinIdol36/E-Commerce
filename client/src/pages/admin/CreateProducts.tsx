@@ -1,3 +1,4 @@
+import { apiCreateProduct } from "@/apis"
 import { InputForm, Select, Button, MarkdownEdit } from "@/components"
 import { getBase64, validate } from "@/utils/helper"
 import icons from "@/utils/icons"
@@ -60,7 +61,7 @@ const CreateProducts = () => {
     handlePreviewImages(watch("images"))
   }, [watch("images")])
 
-  const handleCreateProduct = (data) => {
+  const handleCreateProduct = async (data) => {
     const invalids = validate(payload, setInvalidFields)
     if (invalids === 0) {
       if (data.category)
@@ -72,22 +73,31 @@ const CreateProducts = () => {
       const formData = new FormData()
 
       for (let i of Object.entries(finalPayload)) formData.append(i[0], i[1])
+
+      if (finalPayload.thumb) formData.append("thumb", finalPayload.thumb[0])
+      if (finalPayload.images) {
+        for (let image of finalPayload.images) formData.append("images", image)
+      }
+
+      const response = await apiCreateProduct(formData)
+
+      console.log(response)
     }
   }
 
-  const handleRemoveImage = (name) => {
-    const files = [...watch("images")]
+  // const handleRemoveImage = (name) => {
+  //   const files = [...watch("images")]
 
-    reset({
-      images: files?.filter((el) => el.name !== name),
-    })
+  //   reset({
+  //     images: files?.filter((el) => el.name !== name),
+  //   })
 
-    if (preview.images?.some((el) => el.name === name))
-      setPreview((prev) => ({
-        ...prev,
-        images: prev.images?.filter((el) => el.name !== name),
-      }))
-  }
+  //   if (preview.images?.some((el) => el.name === name))
+  //     setPreview((prev) => ({
+  //       ...prev,
+  //       images: prev.images?.filter((el) => el.name !== name),
+  //     }))
+  // }
 
   return (
     <div className="w-full">
@@ -237,7 +247,7 @@ const CreateProducts = () => {
                     alt="product"
                     className="w-[200px] object-contain"
                   />
-                  {hoverElm === el.name && (
+                  {/* {hoverElm === el.name && (
                     <div
                       onClick={() => handleRemoveImage(el.name)}
                       className="absolute animate-scale-up-center inset-0 
@@ -245,7 +255,7 @@ const CreateProducts = () => {
                     >
                       <RiDeleteBin2Fill size={24} color="white" />
                     </div>
-                  )}
+                  )} */}
                 </div>
               ))}
             </div>

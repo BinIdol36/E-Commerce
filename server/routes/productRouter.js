@@ -11,13 +11,21 @@ const {
 const { verifyAccessToken, isAdmin } = require('../middlewares/verifyToken')
 const uploader = require('../config/cloudinary.config')
 
-router.post('/', [verifyAccessToken, isAdmin], createProduct)
+router.post(
+	'/',
+	[verifyAccessToken, isAdmin],
+	uploader.fields([
+		{ name: 'images', maxCount: 10 },
+		{ name: 'thumb', maxCount: 1 },
+	]),
+	createProduct,
+)
 router.get('/', getProducts)
 router.put('/ratings', verifyAccessToken, ratings)
 router.put(
 	'/uploadimage/:pid',
 	[verifyAccessToken, isAdmin],
-	uploader.array('images', 10),
+	uploader.fields('images', 10),
 	uploadImagesProduct,
 )
 router.put('/:pid', [verifyAccessToken, isAdmin], updateProduct)
