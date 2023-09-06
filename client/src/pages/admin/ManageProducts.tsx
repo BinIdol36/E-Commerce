@@ -2,7 +2,7 @@ import { apiGetProducts } from "@/apis"
 import { InputForm, Pagination } from "@/components"
 import useDebounce from "@/hooks/useDebounce"
 import moment from "moment"
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useCallback } from "react"
 import { useForm } from "react-hook-form"
 import {
   useSearchParams,
@@ -10,6 +10,7 @@ import {
   useNavigate,
   useLocation,
 } from "react-router-dom"
+import { UpdateProduct } from "."
 
 const ManageProducts = () => {
   const [params] = useSearchParams()
@@ -18,12 +19,16 @@ const ManageProducts = () => {
   const {
     register,
     formState: { errors },
-    handleSubmit,
-    reset,
     watch,
   } = useForm()
   const [products, setProducts] = useState(null)
   const [counts, setCounts] = useState(0)
+  const [editProduct, setEditProduct] = useState(null)
+  const [update, setUpdate] = useState(false)
+
+  const render = useCallback(() => {
+    setUpdate(!update)
+  }, [])
 
   const fetchProducts = async (params) => {
     const response = await apiGetProducts({
@@ -54,10 +59,15 @@ const ManageProducts = () => {
     const searchParams = Object.fromEntries([...params])
 
     fetchProducts(searchParams)
-  }, [params])
+  }, [params, update])
 
   return (
     <div className="w-full flex flex-col gap-4 relative">
+      {editProduct && (
+        <div className="absolute inset-0 min-h-screen bg-gray-100 z-50">
+          <UpdateProduct editProduct={editProduct} render={render} />
+        </div>
+      )}
       <div className="h-[69px] w-full"></div>
       <div
         className="p-4 border-b w-full flex bg-gray-100
@@ -90,6 +100,7 @@ const ManageProducts = () => {
             <th className="text-center py-2">Color</th>
             <th className="text-center py-2">Ratings</th>
             <th className="text-center py-2">UpdatedAt</th>
+            <th className="text-center py-2">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -118,6 +129,17 @@ const ManageProducts = () => {
               <td className="text-center py-2">{el.totalRating}</td>
               <td className="text-center py-2">
                 {moment(el.updatedAt).format("DD/MM/YYYY")}
+              </td>
+              <td className="text-center py-2">
+                <span
+                  onClick={() => setEditProduct(el)}
+                  className="text-blue-500 hover:underline cursor-pointer px-1"
+                >
+                  Edit
+                </span>
+                <span className="text-blue-500 hover:underline cursor-pointer px-1">
+                  Remove
+                </span>
               </td>
             </tr>
           ))}
