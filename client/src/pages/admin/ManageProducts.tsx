@@ -1,4 +1,4 @@
-import { apiGetProducts } from "@/apis"
+import { apiGetProducts, apiDeleteProduct } from "@/apis"
 import { InputForm, Pagination } from "@/components"
 import useDebounce from "@/hooks/useDebounce"
 import moment from "moment"
@@ -11,6 +11,8 @@ import {
   useLocation,
 } from "react-router-dom"
 import { UpdateProduct } from "."
+import Swal from "sweetalert2"
+import { toast } from "react-toastify"
 
 const ManageProducts = () => {
   const [params] = useSearchParams()
@@ -61,11 +63,31 @@ const ManageProducts = () => {
     fetchProducts(searchParams)
   }, [params, update])
 
+  const handleDeleteProduct = (pid) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Are you sure remove this product",
+      icon: "warning",
+      showCancelButton: true,
+    }).then(async (rs) => {
+      if (rs.isConfirmed) {
+        const response = await apiDeleteProduct(pid)
+        if (response.success) toast.success(response.mes)
+        else toast.error(response.mes)
+        render()
+      }
+    })
+  }
+
   return (
     <div className="w-full flex flex-col gap-4 relative">
       {editProduct && (
         <div className="absolute inset-0 min-h-screen bg-gray-100 z-50">
-          <UpdateProduct editProduct={editProduct} render={render} />
+          <UpdateProduct
+            editProduct={editProduct}
+            render={render}
+            setEditProduct={setEditProduct}
+          />
         </div>
       )}
       <div className="h-[69px] w-full"></div>
@@ -137,7 +159,10 @@ const ManageProducts = () => {
                 >
                   Edit
                 </span>
-                <span className="text-blue-500 hover:underline cursor-pointer px-1">
+                <span
+                  onClick={() => handleDeleteProduct(el._id)}
+                  className="text-blue-500 hover:underline cursor-pointer px-1"
+                >
                   Remove
                 </span>
               </td>
