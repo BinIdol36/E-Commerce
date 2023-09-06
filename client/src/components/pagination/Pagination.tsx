@@ -5,12 +5,12 @@ import { PaginationItem } from ".."
 
 const Pagination = ({ totalCount }) => {
   const [params] = useSearchParams()
-  const pagination = usePagination(totalCount, params.get("page") || 1)
+  const pagination = usePagination(totalCount, +params.get("page") || 1)
 
   const range = () => {
     const curentPage = +params.get("page")
     const pageSize = +import.meta.env.VITE_REACT_APP_LIMIT || 10
-    const start = (curentPage - 1) * pageSize + 1
+    const start = Math.min((curentPage - 1) * pageSize + 1, totalCount)
     const end = Math.min(curentPage * pageSize, totalCount)
 
     return `${start} - ${end}`
@@ -21,9 +21,13 @@ const Pagination = ({ totalCount }) => {
   return (
     <div className="flex w-full justify-between items-center">
       {!+params.get("page") && (
-        <span className="text-sm italic">{`Show products 1 - ${
-          Math.min(+import.meta.env.VITE_REACT_APP_LIMIT, totalCount) || 10
-        } of ${totalCount}`}</span>
+        <span className="text-sm italic">{`Show products ${Math.min(
+          totalCount,
+          1,
+        )} - ${Math.min(
+          +import.meta.env.VITE_REACT_APP_LIMIT,
+          totalCount,
+        )} of ${totalCount}`}</span>
       )}
       {params.get("page") && (
         <span className="text-sm italic">{`Show products ${range()} of ${totalCount}`}</span>
