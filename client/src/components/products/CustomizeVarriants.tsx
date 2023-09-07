@@ -7,7 +7,6 @@ import Swal from "sweetalert2"
 import { apiAddVarriant } from "@/apis"
 import { showModal } from "@/store/app/appSlice"
 import { useDispatch } from "react-redux"
-useDispatch
 
 const CustomizeVarriants = ({
   customizeVarriant,
@@ -54,7 +53,11 @@ const CustomizeVarriants = ({
 
       dispatch(showModal({ isShowModal: false, modalChildren: null }))
 
-      console.log(response)
+      if (response.success) {
+        toast.success(response.mes)
+        reset()
+        setPreview({ thumb: null, images: [] })
+      } else toast.error(response.mes)
     }
   }
 
@@ -98,7 +101,7 @@ const CustomizeVarriants = ({
           className="text-main hover:underline cursor-pointer"
           onClick={() => setCustomizeVarriant(null)}
         >
-          Cancel
+          Back
         </span>
       </div>
       <form

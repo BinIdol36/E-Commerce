@@ -133,6 +133,7 @@ const ManageProducts = () => {
             <th className="text-center py-2">Sold</th>
             <th className="text-center py-2">Color</th>
             <th className="text-center py-2">Ratings</th>
+            <th className="text-center py-2">Varriants</th>
             <th className="text-center py-2">UpdatedAt</th>
             <th className="text-center py-2">Action</th>
           </tr>
@@ -161,6 +162,7 @@ const ManageProducts = () => {
               <td className="text-center py-2">{el.sold}</td>
               <td className="text-center py-2">{el.color}</td>
               <td className="text-center py-2">{el.totalRating}</td>
+              <td className="text-center py-2">{el.varriants.length || 0}</td>
               <td className="text-center py-2">
                 {moment(el.updatedAt).format("DD/MM/YYYY")}
               </td>

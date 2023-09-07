@@ -213,7 +213,7 @@ const ratings = asyncHandler(async (req, res) => {
 	await updatedProduct.save()
 
 	return res.status(200).json({
-		status: true,
+		success: true,
 		updatedProduct,
 	})
 })
@@ -234,7 +234,7 @@ const uploadImagesProduct = asyncHandler(async (req, res) => {
 	)
 
 	return res.status(200).json({
-		status: response ? true : false,
+		success: response ? true : false,
 		updatedProduct: response ? response : "can't upload images product",
 	})
 })
@@ -264,8 +264,8 @@ const addVarriant = asyncHandler(async (req, res) => {
 	)
 
 	return res.status(200).json({
-		status: response ? true : false,
-		response: response ? response : "can't upload images product",
+		success: response ? true : false,
+		mes: response ? 'Added varriant' : "can't add varriant",
 	})
 })
 
