@@ -251,8 +251,8 @@ const CreateProducts = () => {
             <div className="my-4 flex w-full gap-3 flex-wrap">
               {preview.images?.map((el, index) => (
                 <div
-                  onMouseEnter={() => setHoverElm(el.name)}
-                  onMouseLeave={() => setHoverElm(null)}
+                  // onMouseEnter={() => setHoverElm(el.name)}
+                  // onMouseLeave={() => setHoverElm(null)}
                   className="w-fit relative"
                   key={index}
                 >

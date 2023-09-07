@@ -1,5 +1,5 @@
 import { apiGetProducts, apiDeleteProduct } from "@/apis"
-import { InputForm, Pagination } from "@/components"
+import { CustomizeVarriants, InputForm, Pagination } from "@/components"
 import useDebounce from "@/hooks/useDebounce"
 import moment from "moment"
 import React, { useEffect, useState, useCallback } from "react"
@@ -13,6 +13,8 @@ import {
 import { UpdateProduct } from "."
 import Swal from "sweetalert2"
 import { toast } from "react-toastify"
+import icons from "@/utils/icons"
+const { BiEdit, BiTrash, BiCustomize } = icons
 
 const ManageProducts = () => {
   const [params] = useSearchParams()
@@ -27,6 +29,7 @@ const ManageProducts = () => {
   const [counts, setCounts] = useState(0)
   const [editProduct, setEditProduct] = useState(null)
   const [update, setUpdate] = useState(false)
+  const [customizeVarriant, setCustomizeVarriant] = useState(null)
 
   const render = useCallback(() => {
     setUpdate(!update)
@@ -87,6 +90,15 @@ const ManageProducts = () => {
             editProduct={editProduct}
             render={render}
             setEditProduct={setEditProduct}
+          />
+        </div>
+      )}
+      {customizeVarriant && (
+        <div className="absolute inset-0 min-h-screen bg-gray-100 z-50">
+          <CustomizeVarriants
+            customizeVarriant={customizeVarriant}
+            render={render}
+            setCustomizeVarriant={setCustomizeVarriant}
           />
         </div>
       )}
@@ -155,15 +167,21 @@ const ManageProducts = () => {
               <td className="text-center py-2">
                 <span
                   onClick={() => setEditProduct(el)}
-                  className="text-blue-500 hover:underline cursor-pointer px-1"
+                  className="text-blue-500 inline-block hover:text-orange-500 cursor-pointer px-1"
                 >
-                  Edit
+                  <BiEdit size={20} />
                 </span>
                 <span
                   onClick={() => handleDeleteProduct(el._id)}
-                  className="text-blue-500 hover:underline cursor-pointer px-1"
+                  className="text-blue-500 inline-block hover:text-orange-500 cursor-pointer px-1"
                 >
-                  Remove
+                  <BiTrash size={20} />
+                </span>
+                <span
+                  onClick={() => setCustomizeVarriant(el)}
+                  className="text-blue-500 inline-block hover:text-orange-500 cursor-pointer px-1"
+                >
+                  <BiCustomize size={20} />
                 </span>
               </td>
             </tr>

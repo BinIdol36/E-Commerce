@@ -26,7 +26,12 @@ import {
   AiOutlineCaretRight,
 } from "react-icons/ai"
 import { IoIosArrowForward } from "react-icons/io"
-import { BiDotsHorizontalRounded } from "react-icons/bi"
+import {
+  BiDotsHorizontalRounded,
+  BiEdit,
+  BiTrash,
+  BiCustomize,
+} from "react-icons/bi"
 import { TbBrandProducthunt } from "react-icons/tb"
 
 const icons = {
@@ -56,6 +61,9 @@ const icons = {
   AiOutlineCaretDown,
   AiOutlineCaretRight,
   RiDeleteBin2Fill,
+  BiEdit,
+  BiTrash,
+  BiCustomize,
 }
 
 export default icons
