@@ -1,5 +1,4 @@
 import React, { memo, Fragment, useState } from "react"
-import logo from "@/assets/logo.png"
 import avatar from "@/assets/avater_default.png"
 import { memberSidebar } from "@/utils/contants"
 import { NavLink, Link } from "react-router-dom"
