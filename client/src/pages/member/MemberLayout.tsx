@@ -1,3 +1,4 @@
+import { MemberSidebar } from "@/components"
 import path from "@/utils/path"
 import React from "react"
 import { useSelector } from "react-redux"
@@ -10,9 +11,11 @@ const MemberLayout = () => {
     return <Navigate to={`/${path.LOGIN}`} replace={true} />
 
   return (
-    <div>
-      MemberLayout
-      <Outlet />
+    <div className="flex">
+      <MemberSidebar />
+      <div className="flex-auto bg-gray-100 min-h-screen">
+        <Outlet />
+      </div>
     </div>
   )
 }

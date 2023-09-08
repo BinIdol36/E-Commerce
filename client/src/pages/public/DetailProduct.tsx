@@ -124,10 +124,10 @@ const DetailProduct = () => {
                 smallImage: {
                   alt: "",
                   isFluidWidth: true,
-                  src: currentProduct.thumb,
+                  src: currentProduct.thumb || currentImage,
                 },
                 largeImage: {
-                  src: currentProduct.thumb,
+                  src: currentProduct.thumb || currentImage,
                   width: 1800,
                   height: 1500,
                 },
