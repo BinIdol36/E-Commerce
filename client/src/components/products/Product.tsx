@@ -4,19 +4,50 @@ import trending from "@/assets/trending.png"
 import label from "@/assets/new.png"
 import { SelectOption } from ".."
 import icons from "@/utils/icons"
-import { Link } from "react-router-dom"
+import withBaseComponent from "@/hocs/withBaseComponent"
+import { showModal } from "@/store/app/appSlice"
+import { DetailProduct } from "@/pages/public"
 
 const { AiFillEye, AiOutlineMenu, BsFillSuitHeartFill } = icons
 
-const Product = ({ productData, isNew, normal }) => {
+const Product = ({ productData, isNew, normal, navigate, dispatch }) => {
   const [isShowOption, setIsShowOption] = useState(false)
+
+  const handleClickOptions = (e, flag) => {
+    e.stopPropagation()
+    if (flag === "MENU")
+      navigate(
+        `/${productData?.category?.toLowerCase()}/${productData?._id}/${
+          productData?.title
+        }`,
+      )
+    if (flag === "WISHLIST") console.log("WISHLIST")
+    if (flag === "QUICK_VIEW") {
+      dispatch(
+        showModal({
+          isShowModal: true,
+          modalChildren: (
+            <DetailProduct
+              isQuickView
+              data={{ pid: productData?._id, category: productData?.category }}
+            />
+          ),
+        }),
+      )
+    }
+  }
+
   return (
     <div className="w-full text-base px-[10px]">
-      <Link
-        className="w-full border p-[15px] flex flex-col items-center"
-        to={`/${productData?.category?.toLowerCase()}/${productData?._id}/${
-          productData?.title
-        }`}
+      <div
+        className="w-full border p-[15px] flex flex-col items-center cursor-pointer"
+        onClick={(e) =>
+          navigate(
+            `/${productData?.category?.toLowerCase()}/${productData?._id}/${
+              productData?.title
+            }`,
+          )
+        }
         onMouseEnter={(e) => {
           e.stopPropagation()
           setIsShowOption(true)
@@ -29,9 +60,15 @@ const Product = ({ productData, isNew, normal }) => {
         <div className="w-full relative">
           {isShowOption && (
             <div className="absolute bottom-[-10px] left-0 right-0 flex justify-center gap-2 animate-slide-top">
-              <SelectOption icon={<AiFillEye />} />
-              <SelectOption icon={<AiOutlineMenu />} />
-              <SelectOption icon={<BsFillSuitHeartFill />} />
+              <span onClick={(e) => handleClickOptions(e, "QUICK_VIEW")}>
+                <SelectOption icon={<AiFillEye />} />
+              </span>
+              <span onClick={(e) => handleClickOptions(e, "MENU")}>
+                <SelectOption icon={<AiOutlineMenu />} />
+              </span>
+              <span onClick={(e) => handleClickOptions(e, "WISHLIST")}>
+                <SelectOption icon={<BsFillSuitHeartFill />} />
+              </span>
             </div>
           )}
           <img
@@ -61,9 +98,9 @@ const Product = ({ productData, isNew, normal }) => {
           <span className="line-clamp-1">{productData?.title}</span>
           <span>{`${formatMoney(productData?.price)} VND`}</span>
         </div>
-      </Link>
+      </div>
     </div>
   )
 }
 
-export default memo(Product)
+export default withBaseComponent(memo(Product))
