@@ -8,11 +8,15 @@ export const appSlice = createSlice({
     isLoading: false,
     isShowModal: false,
     modalChildren: null,
+    isShowCart: false,
   },
   reducers: {
     showModal: (state, action) => {
       state.isShowModal = action.payload.isShowModal
       state.modalChildren = action.payload.modalChildren
+    },
+    showCart: (state) => {
+      state.isShowCart = state.isShowCart === false ? true : false
     },
   },
   // Code logic xử lý async action
@@ -39,6 +43,6 @@ export const appSlice = createSlice({
   },
 })
 
-export const { showModal } = appSlice.actions
+export const { showModal, showCart } = appSlice.actions
 
 export default appSlice.reducer // reducer là export cả reducers vs extraReducers

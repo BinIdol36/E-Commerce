@@ -27,6 +27,7 @@ import {
   AiOutlineDashboard,
   AiOutlineCaretDown,
   AiOutlineCaretRight,
+  AiFillCloseCircle,
 } from "react-icons/ai"
 import { IoIosArrowForward } from "react-icons/io"
 import {
@@ -70,6 +71,7 @@ const icons = {
   BsCartPlus,
   BsFillCartCheckFill,
   BsFillCartPlusFill,
+  AiFillCloseCircle,
 }
 
 export default icons
