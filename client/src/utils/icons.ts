@@ -37,6 +37,7 @@ import {
   BiCustomize,
 } from "react-icons/bi"
 import { TbBrandProducthunt } from "react-icons/tb"
+import { ImBin } from "react-icons/im"
 
 const icons = {
   RiPhoneFill,
@@ -72,6 +73,7 @@ const icons = {
   BsFillCartCheckFill,
   BsFillCartPlusFill,
   AiFillCloseCircle,
+  ImBin,
 }
 
 export default icons

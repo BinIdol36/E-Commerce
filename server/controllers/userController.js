@@ -487,7 +487,7 @@ const updateCart = asyncHandler(async (req, res) => {
 
 		return res.status(200).json({
 			success: response ? true : false,
-			updatedUser: response ? 'Updated your cart' : 'Some thing went wrong',
+			mes: response ? 'Updated your cart' : 'Some thing went wrong',
 		})
 	}
 })
@@ -502,8 +502,8 @@ const removeProductInCart = asyncHandler(async (req, res) => {
 
 	if (!alreadyProduct)
 		return res.status(200).json({
-			success: true,
-			updatedUser: 'Updated your cart',
+			success: false,
+			mes: "Can't find product",
 		})
 
 	const response = await User.findByIdAndUpdate(
@@ -516,7 +516,7 @@ const removeProductInCart = asyncHandler(async (req, res) => {
 
 	return res.status(200).json({
 		success: response ? true : false,
-		updatedUser: response ? 'Updated your cart' : 'Some thing went wrong',
+		mes: response ? 'Updated your cart' : 'Some thing went wrong',
 	})
 })
 

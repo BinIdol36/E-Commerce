@@ -20,6 +20,9 @@ module.exports = {
       width: {
         main: "1220px",
       },
+      gridRow: {
+        "span-7": "span 7 / span 7",
+      },
       gridTemplateRows: {
         // Simple 16 column grid
         10: "repeat(10, minmax(0, 1fr))",

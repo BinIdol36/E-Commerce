@@ -4,10 +4,23 @@ import { formatMoney } from "@/utils/helper"
 import icons from "@/utils/icons"
 import React, { memo } from "react"
 import { useSelector } from "react-redux"
-const { AiFillCloseCircle } = icons
+import { Button } from ".."
+import { getCurrent } from "@/store/user/asyncActions"
+import { toast } from "react-toastify"
+import { apiRemoveCart } from "@/apis"
+import path from "@/utils/path"
 
-const Cart = ({ dispatch }) => {
+const { AiFillCloseCircle, ImBin } = icons
+
+const Cart = ({ dispatch, navigate }) => {
   const { current } = useSelector((state) => state.user)
+
+  const removeCart = async (pid) => {
+    const response = await apiRemoveCart(pid)
+
+    if (response.success) dispatch(getCurrent())
+    else toast.error(response.mes)
+  }
 
   return (
     <div
@@ -26,29 +39,61 @@ const Cart = ({ dispatch }) => {
           <AiFillCloseCircle size={24} />
         </span>
       </header>
-      <section className="row-span-6 flex flex-col gap-3 h-full max-h-full overflow-y-auto py-3">
+      <section className="row-span-7 flex flex-col gap-3 h-full max-h-full overflow-y-auto py-3">
         {!current?.cart && (
           <span className="text-xs italic">Your cart is empty.</span>
         )}
         {current?.cart &&
           current?.cart?.map((el) => (
-            <div key={el._id} className="flex gap-2">
-              <img
-                src={el?.product?.thumb}
-                alt="thumb"
-                className="w-16 h-16 object-cover"
-              />
-              <div className="flex flex-col gap-1">
-                <span className="text-main">{el?.product?.title}</span>
-                <span className="text-xs">{el?.color}</span>
-                <span className="text-base">
-                  {`${formatMoney(el?.product?.price)} VND`}
-                </span>
+            <div key={el._id} className="flex items-center justify-between">
+              <div className="flex gap-2">
+                <img
+                  src={el?.product?.thumb}
+                  alt="thumb"
+                  className="w-16 h-16 object-cover"
+                />
+                <div className="flex flex-col gap-1">
+                  <span className="text-sm text-main">
+                    {el?.product?.title}
+                  </span>
+                  <span className="text-xs">{el?.color}</span>
+                  <span className="text-sm">
+                    {`${formatMoney(el?.product?.price)} VND`}
+                  </span>
+                </div>
               </div>
+              <span
+                onClick={() => removeCart(el.product?._id)}
+                className="h-8 w-8 flex items-center justify-center rounded-full hover:bg-gray-700 cursor-pointer"
+              >
+                <ImBin size={16} />
+              </span>
             </div>
           ))}
       </section>
-      <div className="row-span-3 h-full">checkout</div>
+      <div className="row-span-2 flex flex-col justify-between h-full">
+        <div className="flex items-center justify-between pt-4 border-t">
+          <span>Subtotal: </span>
+          <span>{`${formatMoney(
+            current?.cart?.reduce(
+              (sum, el) => sum + Number(el.product?.price),
+              0,
+            ),
+          )} VND`}</span>
+        </div>
+        <span className="text-center text-gray-700 italic text-xs">
+          Shipping, taxes, and discounts calculated at checkout.
+        </span>
+        <Button
+          handleOnClick={() => {
+            navigate(`${path.DETAIL_CART}`)
+            dispatch(showCart())
+          }}
+          style={"rounded-none w-full bg-main py-3"}
+        >
+          Shopping Cart
+        </Button>
+      </div>
     </div>
   )
 }
