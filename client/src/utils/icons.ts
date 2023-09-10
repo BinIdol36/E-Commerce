@@ -10,6 +10,9 @@ import {
   BsFillSuitHeartFill,
   BsShieldShaded,
   BsReplyFill,
+  BsCartPlus,
+  BsFillCartCheckFill,
+  BsFillCartPlusFill,
 } from "react-icons/bs"
 import { FaUserCircle, FaTty } from "react-icons/fa"
 import {
@@ -64,6 +67,9 @@ const icons = {
   BiEdit,
   BiTrash,
   BiCustomize,
+  BsCartPlus,
+  BsFillCartCheckFill,
+  BsFillCartPlusFill,
 }
 
 export default icons

@@ -32,7 +32,7 @@ const Products = () => {
   const navigate = useNavigate()
 
   const fetchProductsByCategory = async (queries) => {
-    const response = await apiGetProducts(queries)
+    const response = await apiGetProducts({ ...queries, category })
     if (response.success) setProducts(response)
   }
 
@@ -135,7 +135,7 @@ const Products = () => {
           ))}
         </Masonry>
       </div>
-      <div className="w-main m-aut my-4 flex justify-end">
+      <div className="w-main m-auto my-4 flex justify-center">
         <Pagination totalCount={products?.counts} />
       </div>
       <div className="w-full h-[100px]"></div>
