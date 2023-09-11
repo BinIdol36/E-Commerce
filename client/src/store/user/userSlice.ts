@@ -15,14 +15,17 @@ export const userSlice = createSlice({
       state.isLoggedIn = action.payload.isLoggedIn
       state.token = action.payload.token
     },
-    logout: (state, action) => {
+    logout: (state) => {
       state.isLoggedIn = false
       state.token = null
       state.current = null
     },
-    clearMessage: (state, action) => {
+    clearMessage: (state) => {
       state.mes = ""
     },
+    // updateCart: (state, action) => {
+
+    // },
   },
   // Code logic xử lý async action
   extraReducers: (builder) => {

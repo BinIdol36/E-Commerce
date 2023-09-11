@@ -7,7 +7,7 @@ import {
   apiFinalRegister,
 } from "@/apis"
 import Swal from "sweetalert2"
-import { useNavigate, Link } from "react-router-dom"
+import { useNavigate, Link, useSearchParams } from "react-router-dom"
 import path from "@/utils/path"
 import { login } from "@/store/user/userSlice"
 import { useDispatch } from "react-redux"
@@ -42,6 +42,7 @@ function Login() {
   const [token, setToken] = useState("")
   const [invalidFields, setInvalidFields] = useState([])
   const [email, setEmail] = useState("")
+  const [searchParams] = useSearchParams()
 
   useEffect(() => {
     resetPayload()
@@ -83,7 +84,9 @@ function Login() {
               userData: response.userData,
             }),
           )
-          navigate(`/${path.HOME}`)
+          searchParams.get("redirect")
+            ? navigate(searchParams.get("redirect"))
+            : navigate(`/${path.HOME}`)
         } else Swal.fire("Oops!", response.mes, "error")
       }
     }
