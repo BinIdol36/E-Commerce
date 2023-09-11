@@ -76,6 +76,14 @@ const DetailProduct = ({ isQuickView, data, navigate, dispatch, location }) => {
         thumb: product?.varriants?.find((el) => el.sku === varriants)?.thumb,
         color: product?.varriants?.find((el) => el.sku === varriants)?.color,
       })
+    } else {
+      setCurrentProduct({
+        title: product?.title,
+        price: product?.price,
+        images: product?.images || [],
+        thumb: product?.thumb,
+        color: product?.color,
+      })
     }
   }, [varriants])
 
@@ -143,8 +151,11 @@ const DetailProduct = ({ isQuickView, data, navigate, dispatch, location }) => {
 
     const response = await apiUpdateCart({
       pid,
-      color: currentProduct.color,
+      color: currentProduct.color || product?.color,
       quantity,
+      price: currentProduct.price || product?.price,
+      thumbnail: currentProduct.thumb || product?.thumb,
+      title: currentProduct.title || product?.title,
     })
 
     if (response.success) {
@@ -280,6 +291,7 @@ const DetailProduct = ({ isQuickView, data, navigate, dispatch, location }) => {
               </div>
               {product?.varriants?.map((el) => (
                 <div
+                  key={el.sku}
                   onClick={() => setVarriants(el.sku)}
                   className={clsx(
                     "flex items-center gap-2 p-2 border cursor-pointer",

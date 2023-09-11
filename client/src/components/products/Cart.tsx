@@ -15,12 +15,14 @@ const { AiFillCloseCircle, ImBin } = icons
 const Cart = ({ dispatch, navigate }) => {
   const { current } = useSelector((state) => state.user)
 
-  const removeCart = async (pid) => {
-    const response = await apiRemoveCart(pid)
+  const removeCart = async (pid, color) => {
+    const response = await apiRemoveCart(pid, color)
 
     if (response.success) dispatch(getCurrent())
     else toast.error(response.mes)
   }
+
+  console.log(current.cart)
 
   return (
     <div
@@ -48,22 +50,20 @@ const Cart = ({ dispatch, navigate }) => {
             <div key={el._id} className="flex items-center justify-between">
               <div className="flex gap-2">
                 <img
-                  src={el?.product?.thumb}
+                  src={el?.thumbnail}
                   alt="thumb"
                   className="w-16 h-16 object-cover"
                 />
                 <div className="flex flex-col gap-1">
-                  <span className="text-sm text-main">
-                    {el?.product?.title}
-                  </span>
+                  <span className="text-sm text-main">{el?.title}</span>
                   <span className="text-xs">{el?.color}</span>
                   <span className="text-sm">
-                    {`${formatMoney(el?.product?.price)} VND`}
+                    {`${formatMoney(el?.price)} VND`}
                   </span>
                 </div>
               </div>
               <span
-                onClick={() => removeCart(el.product?._id)}
+                onClick={() => removeCart(el.product?._id, el.color)}
                 className="h-8 w-8 flex items-center justify-center rounded-full hover:bg-gray-700 cursor-pointer"
               >
                 <ImBin size={16} />
