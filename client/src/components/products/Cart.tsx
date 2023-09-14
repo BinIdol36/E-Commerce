@@ -85,7 +85,7 @@ const Cart = ({ dispatch, navigate }) => {
         </span>
         <Button
           handleOnClick={() => {
-            navigate(`${path.DETAIL_CART}`)
+            navigate(`/${path.MEMBER}/${path.DETAIL_CART}`)
             dispatch(showCart())
           }}
           style={"rounded-none w-full bg-main py-3"}

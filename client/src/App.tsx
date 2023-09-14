@@ -27,6 +27,7 @@ import {
   MyCart,
   Personal,
   Wishlist,
+  Checkout,
 } from "@/pages/member"
 import path from "@/utils/path"
 import { getCategories } from "@/store/app/asyncActions"
@@ -56,6 +57,7 @@ function App() {
       )}
       {isShowModal && <Modal>{modalChildren}</Modal>}
       <Routes>
+        <Route path={path.CHECKOUT} element={<Checkout />} />
         <Route path={path.PUBLIC} element={<Public />}>
           <Route path={path.HOME} element={<Home />} />
           <Route path={path.FAQ} element={<FAQ />} />
@@ -67,7 +69,6 @@ function App() {
           <Route path={path.BLOGS} element={<Blogs />} />
           <Route path={path.PRODUCTS} element={<Products />} />
           <Route path={path.RESET_PASSWORD} element={<ResetPassword />} />
-          <Route path={path.DETAIL_CART} element={<DetailCart />} />
           <Route path={path.ALL} element={<Home />} />
         </Route>
         <Route path={path.ADMIN} element={<AdminLayout />}>
@@ -80,7 +81,7 @@ function App() {
         <Route path={path.MEMBER} element={<MemberLayout />}>
           <Route path={path.PERSONAL} element={<Personal />} />
           <Route path={path.HISTORY} element={<History />} />
-          <Route path={path.MY_CART} element={<MyCart />} />
+          <Route path={path.MY_CART} element={<DetailCart />} />
           <Route path={path.WISHLIST} element={<Wishlist />} />
         </Route>
         <Route path={path.FINAL_REGISTER} element={<FinalRegister />} />
