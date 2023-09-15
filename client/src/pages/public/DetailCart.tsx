@@ -8,8 +8,6 @@ import { Link } from "react-router-dom"
 const DetailCart = ({ location }) => {
   const { currentCart } = useSelector((state) => state.user)
 
-  console.log(currentCart)
-
   return (
     <div className="w-full">
       <div className="h-[81px] flex items-center justify-center bg-gray-100">
