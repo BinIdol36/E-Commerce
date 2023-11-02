@@ -38,6 +38,7 @@ import {
 } from "react-icons/bi"
 import { TbBrandProducthunt } from "react-icons/tb"
 import { ImBin } from "react-icons/im"
+import { LuForward } from "react-icons/lu"
 
 const icons = {
   RiPhoneFill,
@@ -74,6 +75,7 @@ const icons = {
   BsFillCartPlusFill,
   AiFillCloseCircle,
   ImBin,
+  LuForward,
 }
 
 export default icons

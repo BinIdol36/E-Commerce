@@ -17,6 +17,9 @@ module.exports = {
       roman: "upper-roman",
     },
     extend: {
+      zIndex: {
+        5000000000: "5000000000",
+      },
       width: {
         main: "1220px",
       },

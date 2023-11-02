@@ -30,9 +30,11 @@ const Products = () => {
   const [sort, setSort] = useState("")
   const [params] = useSearchParams()
   const navigate = useNavigate()
+  console.log(category)
 
   const fetchProductsByCategory = async (queries) => {
-    const response = await apiGetProducts({ ...queries, category })
+    if (category && category !== "products") queries.category = category
+    const response = await apiGetProducts(queries)
     if (response.success) setProducts(response)
   }
 
