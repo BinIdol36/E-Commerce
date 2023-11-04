@@ -72,6 +72,11 @@ const getProducts = asyncHandler(async (req, res) => {
 			$regex: queries.category,
 			$options: 'i', // tìm kiếm không phân biệt chữ hoa chữ thường trong quá trình tìm kiếm theo mẫu
 		}
+	if (queries?.brand)
+		formatedQueries.brand = {
+			$regex: queries.brand,
+			$options: 'i', // tìm kiếm không phân biệt chữ hoa chữ thường trong quá trình tìm kiếm theo mẫu
+		}
 	if (queries?.color) {
 		delete formatedQueries.color
 		const colorArr = queries.color?.split(',')

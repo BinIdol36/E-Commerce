@@ -6,8 +6,13 @@ export const productSlice = createSlice({
   initialState: {
     newProducts: null,
     errorMessage: "",
+    dealDaily: null,
   },
-  reducers: {},
+  reducers: {
+    getDealDaily: (state, action) => {
+      state.dealDaily = action.payload
+    },
+  },
   // Code logic xử lý async action
   extraReducers: (builder) => {
     // Bắt đầu thực hiện action login (Promise pending)
@@ -32,6 +37,6 @@ export const productSlice = createSlice({
   },
 })
 
-// export const {} = productSlice.actions
+export const { getDealDaily } = productSlice.actions
 
 export default productSlice.reducer // reducer là export cả reducers vs extraReducers

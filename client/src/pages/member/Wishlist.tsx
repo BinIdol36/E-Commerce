@@ -9,16 +9,13 @@ const Wishlist = () => {
       <header className="text-3xl font-semibold py-4 border-b border-b-blue-200">
         Wishlist
       </header>
-      <div className="p-4 w-full grid grid-cols-5 gap-4">
+      <div className="py-4 w-full flex flex-wrap gap-4">
         {current?.wishList?.map((el) => (
           <div
-            className="bg-white  rounded-md drop-shadow flex flex-col gap-3"
+            className="bg-white rounded-md w-[300px] drop-shadow flex flex-col py-3 gap-3"
             key={el._id}
           >
             <Product productData={el} classname="bg-white" />
-            <div className="px-3">
-              <Button>Add to Cart</Button>
-            </div>
           </div>
         ))}
       </div>

@@ -122,7 +122,9 @@ const Product = ({
               >
                 <SelectOption icon={<AiFillEye />} />
               </span>
-              {current?.cart?.some((el) => el.product === productData._id) ? (
+              {current?.cart?.some(
+                (el) => el.product._id === productData._id,
+              ) ? (
                 <span title="Added to Cart">
                   <SelectOption
                     icon={<BsFillCartCheckFill color={"green"} />}

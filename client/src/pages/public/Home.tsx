@@ -9,10 +9,12 @@ import {
 } from "@/components"
 import { useSelector } from "react-redux"
 import icons from "@/utils/icons"
+import withBaseComponent from "@/hocs/withBaseComponent"
+import { createSearchParams } from "react-router-dom"
 
 const { IoIosArrowForward } = icons
 
-function Home() {
+function Home({ navigate }) {
   const { newProducts } = useSelector((state) => state.products)
   const { categories } = useSelector((state) => state.app)
   const { isLoggedIn, current } = useSelector((state) => state.user)
@@ -63,7 +65,15 @@ function Home() {
                       {el?.brand?.map((item) => (
                         <span
                           key={item}
-                          className="flex gap-1 items-center text-gray-500"
+                          className="flex cursor-pointer hover:underline gap-1 items-center text-gray-500"
+                          onClick={() =>
+                            navigate({
+                              pathname: `/${el.title.toLowerCase()}`,
+                              search: createSearchParams({
+                                brand: item,
+                              }).toString(),
+                            })
+                          }
                         >
                           <IoIosArrowForward size={14} />
                           <li>{item}</li>
@@ -85,4 +95,4 @@ function Home() {
   )
 }
 
-export default Home
+export default withBaseComponent(Home)

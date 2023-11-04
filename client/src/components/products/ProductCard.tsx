@@ -1,9 +1,21 @@
 import React, { memo } from "react"
 import { formatMoney, renderStarFromNumber } from "@/utils/helper"
+import withBaseComponent from "@/hocs/withBaseComponent"
 
-const ProductCard = ({ price, totalRating, title, image }) => {
+const ProductCard = ({
+  price,
+  totalRating,
+  title,
+  image,
+  pid,
+  category,
+  navigate,
+}) => {
   return (
-    <div className="w-1/3 flex-auto px-[10px] mb-[20px]">
+    <div
+      onClick={(e) => navigate(`/${category.toLowerCase()}/${pid}/${title}`)}
+      className="w-1/3 flex-auto px-[10px] mb-[20px] cursor-pointer"
+    >
       <div className="border flex w-full">
         <img
           src={image}
@@ -26,4 +38,4 @@ const ProductCard = ({ price, totalRating, title, image }) => {
   )
 }
 
-export default memo(ProductCard)
+export default withBaseComponent(memo(ProductCard))
