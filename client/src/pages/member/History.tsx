@@ -78,7 +78,6 @@ const History = ({ navigate, location }) => {
             <th className="text-center py-2">Total</th>
             <th className="text-center py-2">Status</th>
             <th className="text-center py-2">Created At</th>
-            <th className="text-center py-2">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -90,11 +89,25 @@ const History = ({ navigate, location }) => {
                   index +
                   1}
               </td>
-              <td className="text-justify py-2">
-                <span className="flex flex-col">
+              <td className="text-center py-2 max-w-[600px]">
+                <span className="grid grid-cols-4 gap-4">
                   {el.products?.map((item) => (
-                    <span key={item._id}>
-                      {`• ${item.title} - ${item.color}`}
+                    <span
+                      className="flex col-span-1 items-center gap-2"
+                      key={item._id}
+                    >
+                      <img
+                        src={item.thumbnail}
+                        alt="thumb"
+                        className="w-8 -8 rounded-md object-cover"
+                      />
+                      <span className="flex flex-col">
+                        <span className="text-main text-sm">{item.title}</span>
+                        <span className="flex items-center text-xs gap-2">
+                          <span>Quantity:</span>
+                          <span className="text-main">{item.quantity}</span>
+                        </span>
+                      </span>
                     </span>
                   ))}
                 </span>
@@ -103,26 +116,6 @@ const History = ({ navigate, location }) => {
               <td className="text-center py-2">{el.status}</td>
               <td className="text-center py-2">
                 {moment(el.createdAt).format("DD/MM/YYYY")}
-              </td>
-              <td className="text-center py-2">
-                {/* <span
-                  onClick={() => setEditProduct(el)}
-                  className="text-blue-500 inline-block hover:text-orange-500 cursor-pointer px-1"
-                >
-                  <BiEdit size={20} />
-                </span>
-                <span
-                  onClick={() => handleDeleteProduct(el._id)}
-                  className="text-blue-500 inline-block hover:text-orange-500 cursor-pointer px-1"
-                >
-                  <BiTrash size={20} />
-                </span>
-                <span
-                  onClick={() => setCustomizeVarriant(el)}
-                  className="text-blue-500 inline-block hover:text-orange-500 cursor-pointer px-1"
-                >
-                  <BiCustomize size={20} />
-                </span> */}
               </td>
             </tr>
           ))}

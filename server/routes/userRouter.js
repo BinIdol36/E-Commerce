@@ -16,6 +16,7 @@ const {
 	finalregister,
 	createUsers,
 	removeProductInCart,
+	updateWishlist,
 } = require('../controllers/userController')
 const { verifyAccessToken, isAdmin } = require('../middlewares/verifyToken')
 const uploader = require('../config/cloudinary.config')
@@ -30,8 +31,6 @@ router.post('/refreshtoken', refreshAccessToken)
 router.get('/logout', verifyAccessToken, logout)
 router.post('/forgotpassword', forgotPassword)
 router.put('/resetpassword', resetPassword)
-router.get('/', [verifyAccessToken, isAdmin], getUsers)
-router.delete('/:uid', [verifyAccessToken, isAdmin], deleteUser)
 router.put('/current', verifyAccessToken, uploader.single('avatar'), updateUser)
 router.put('/address', verifyAccessToken, updateUserAddress)
 router.put('/cart', verifyAccessToken, updateCart)
@@ -40,6 +39,9 @@ router.delete(
 	verifyAccessToken,
 	removeProductInCart,
 )
+router.put('/wishlist/:pid', verifyAccessToken, updateWishlist)
+router.get('/', [verifyAccessToken, isAdmin], getUsers)
+router.delete('/:uid', [verifyAccessToken, isAdmin], deleteUser)
 router.put('/:uid', [verifyAccessToken, isAdmin], updateUserByAdmin)
 
 module.exports = router
